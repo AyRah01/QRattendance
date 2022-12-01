@@ -1,39 +1,34 @@
-
 import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import useStorage from '../helper/useStorage';
+import { useFocusEffect } from '@react-navigation/native';
 
-export default function Attendance({ navigation }) {
-  const {getValueFor} = useStorage()
-  const [classes, setClasses] = useState([])
+export default function Students({ navigation }) {
+  const [students, setStudents] = useState([]);
+  useFocusEffect(
 
-  
-
-  useEffect(()=>{
-    const reqClasses = async()=>{
-      const email = await getValueFor("user_id")
-      const classsReq = await axios.get(API_BASE+"/getClasses/"+email)
-
-      const classesData = classsReq.data
-       setClasses(classesData)
-       console.log(classesData)
-
+    useCallback(()=>{
+        const reqClasses = async () => {
+          const classsReq = await axios.post(API_BASE + '/getAllStudents');
+    
+          const studentsData = classsReq.data;
+          setStudents(studentsData);
     }
     reqClasses();
 
-  },[])
+  },[navigation]))
 
   const Item = ({ data, target }) => {
+    const fullname = data.firstname + ' ' + data.middlename + ' ' + data.lastname;
     return (
-      <View style={styles.item} onTouchEnd = {()=>navigation.navigate("view-attendance",{classData:data})}>
-        <Text style={styles.itemTitle}>{data.course_title.toUpperCase()}</Text>
-        <Text style={styles.itemTitle}>{data.course_number}</Text>
+      <View style={styles.item} onTouchEnd={() => navigation.navigate('student-details', { data })}>
+        <Text style={styles.itemTitle}>{fullname.toUpperCase()}</Text>
+        <Text style={styles.itemTitle}>{data.year_section}</Text>
       </View>
     );
   };
@@ -47,12 +42,15 @@ export default function Attendance({ navigation }) {
               <Text style={styles.header}>QR ATTENDANCE</Text>
             </View>
             <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>Check Attendance</Text>
+              <Text style={styles.title}>STUDENTS</Text>
             </View>
             <View style={styles.itemsWrapper}>
-              {classes.map((data, idx) => (
+              {students.map((data, idx) => (
                 <Item data={data} key={idx} />
               ))}
+            </View>
+            <View style={styles.footer}>
+              <CustomBtn title="Add Student" action={()=>navigation.navigate("add-student")}/>
             </View>
           </View>
         </ScrollView>
@@ -131,4 +129,3 @@ const styles = StyleSheet.create({
     width: '90%',
   },
 });
-

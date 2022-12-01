@@ -4,28 +4,44 @@ import axios from 'axios';
 import { API_BASE } from '../config';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import useStorage from '../helper/useStorage';
-import { Picker } from '@react-native-picker/picker';
 
-export default function AddClass({ navigation, route }) {
-  const {getValueFor} = useStorage()
-  const {type, classData} = route.params
+export default function Enroll({ navigation, route }) {
+  const [students, setStudents] = useState([])
+  const [toSearch, setToSearch] = useState("")
 
-  const [courseNumber, setCourseNumber] = useState(classData?.course_number);
-  const [courseTitle, setCourseTitle] = useState(classData?.course_title);
-  const [semester, setSemester] = useState(classData?.semester);
-  const [schoolYear, setSchoolYear] = useState(classData?.school_year);
-  useEffect(() => {}, []);
+  const classId = route.params.classId 
 
-  const submit = async() => {
-    const email = await getValueFor("user_id")
-    const url = type==='edit'?API_BASE+"/editClass/"+classData.id:API_BASE+"/addClass"
-    const submitReq = await axios.post(url,{courseNumber, courseTitle, semester, schoolYear, email})
-    if(submitReq.status !== 200)return Alert.alert("Server Error", "Sorry, cannot reach the server at the moment. Please try again later.")
-    if(!submitReq.data.success)return Alert.alert("Failed to Save", "Sorry, an error has occured while saving the data. Please try again later.")
 
-    navigation.navigate("classes")
+  useEffect(() => {
+    if(toSearch.length > 3)search()
+  }, [toSearch]);
+
+  const search = async() => {
+     const searchReq = await axios.get(API_BASE+"/searchStudent/"+toSearch)
+
+     if(searchReq.status === 200){
+        const searchData = searchReq.data
+        setStudents(searchData)
+     }
   }
+  const submitStudent = async(studentId) => {
+        const enrollReq = await axios.post(API_BASE+"/enroll",{classId, studentId})
+        if(enrollReq.status !== 200)return Alert.alert("Server Error", "Sorry, cannot reach the server at the moment. Please try again later.")
+        const enrollRes = enrollReq.data
+        if(!enrollRes.success)return Alert.alert("Failed to Enroll", "Sorry, an error has occured while enrolling student. Please try again later.")
+
+        navigation.goBack()
+        
+  }
+
+  const Student = ({ data, target }) => {
+    return (
+      <View style={styles.item} onTouchEnd={() =>submitStudent(data.student_id)}>
+        <Text style={styles.itemTitle}>{data.fullname.toUpperCase()}</Text>
+        <Text style={styles.itemTitle}>{data.year_section}</Text>
+      </View>
+    );
+  };
   return (
     <View style={{ flex: 1, backgroundColor: 'black' }}>
       <SafeAreaView style={styles.mainWrapper}>
@@ -35,38 +51,20 @@ export default function AddClass({ navigation, route }) {
               <Text style={styles.header}>QR ATTENDANCE</Text>
             </View>
             <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>{type==="edit"?"Edit Class":"Add Class"}</Text>
+              <Text style={styles.title}>Enroll Student</Text>
             </View>
             <View style={styles.detailsWrapper}>
               <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Course Number</Text>
-                <TextInput style={styles.input} defaultValue={courseNumber} onChangeText={(e)=>setCourseNumber(e)} />
+                <Text style={styles.detailsTitle}>Search:</Text>
+                <TextInput style={styles.input} defaultValue={toSearch} onChangeText={(e)=>setToSearch(e)} />
               </View>
-              <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Course Title</Text>
-                <TextInput style={styles.input} defaultValue={courseTitle} onChangeText={(e)=>setCourseTitle(e)} />
+              <View style = {styles.list}>
+                    {students.map((data, idx)=>(
+                        <Student data={data} key = {idx}/>
+                    ))}
+
               </View>
               
-              <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Semister</Text>
-                <Picker
-                style={{flex:1}}
-                  selectedValue={semester}
-                  onValueChange={(itemValue, itemIndex) => setSemester(itemValue)}
-                >                  
-                    <Picker.Item label="First"value="1" />
-                    
-                    <Picker.Item label="Second"value="2" />
-                </Picker>
-              </View>
-            <View style={styles.details}>
-                <Text style={styles.detailsTitle}>School Year</Text>
-                <TextInput style={styles.input} defaultValue={schoolYear} onChangeText={(e)=>setSchoolYear(e)} />
-              </View>
-
-              <View style={styles.btnWrapper}>
-              <CustomBtn title="Add Class" type={"primary"} action = {submit}/>
-            </View>
             </View>
           </View>
         </ScrollView>
@@ -137,7 +135,7 @@ const styles = StyleSheet.create({
   },
   details: {
     width: '95%',
-    height: 50,
+    height: 'auto',
     borderRadius: 3,
     flex: 0,
     backgroundColor: '#e8d5c5',
@@ -163,5 +161,26 @@ const styles = StyleSheet.create({
   btnWrapper: {
     width: 100,
     margin: 10,
+  },
+  list:{
+    height:"auto",
+    width:"100%"
+  },
+  item: {
+    width: '95%',
+    height: 'auto',
+    borderRadius: 10,
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: 5,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: 'white',
+  },
+  itemTitle: {
+    fontWeight: 'bold',
+    color: 'white',
   },
 });

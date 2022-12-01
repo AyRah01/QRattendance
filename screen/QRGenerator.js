@@ -1,7 +1,6 @@
 'use strict';
  
 import React, { Component, useEffect, useState } from 'react'
-import QRCode from 'react-native-qrcode-generator';
  
 import {
     AppRegistry,
@@ -17,11 +16,7 @@ const QRGenerator = ({route, navigation}) => {
      useEffect(()=>{
         console.log(route.params)
      },[])
-    // const studentId = "cc-19-365"
-    // const firstname = "Emmanuel"
-    // const middlename = "Despi"
-    // const lastname = "Katipunan"
-    // const yearSection = "4A"
+    
     return (
         <View style={styles.container}>
           <View>
@@ -30,11 +25,7 @@ const QRGenerator = ({route, navigation}) => {
           <Text style = {styles.name}>Lastname :{lastname}</Text>
           
           </View>
-          <QRCode
-            value={studentId}
-            size={200}
-            bgColor='black'
-            fgColor='white'/>
+
         </View>
       );
 }

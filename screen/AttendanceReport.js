@@ -1,4 +1,3 @@
-
 import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -7,33 +6,28 @@ import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import useStorage from '../helper/useStorage';
 
-export default function Attendance({ navigation }) {
-  const {getValueFor} = useStorage()
-  const [classes, setClasses] = useState([])
-
+export default function AttendanceReport({ navigation, route }) {
+  const [attendance, setAttendance] = useState([]);
+  const classData = route.params.classData
   
 
-  useEffect(()=>{
-    const reqClasses = async()=>{
-      const email = await getValueFor("user_id")
-      const classsReq = await axios.get(API_BASE+"/getClasses/"+email)
+  useEffect(() => {
+    const reqClasses = async () => {
+      const attendanceReq = await axios.post(API_BASE + '/getAttendance',{classId:classData.course_number});
 
-      const classesData = classsReq.data
-       setClasses(classesData)
-       console.log(classesData)
-
-    }
+      const attendanceData = attendanceReq.data;
+      setAttendance(attendanceData)
+      console.log(attendanceData);
+    };
     reqClasses();
-
-  },[])
+  }, []);
 
   const Item = ({ data, target }) => {
     return (
-      <View style={styles.item} onTouchEnd = {()=>navigation.navigate("view-attendance",{classData:data})}>
-        <Text style={styles.itemTitle}>{data.course_title.toUpperCase()}</Text>
-        <Text style={styles.itemTitle}>{data.course_number}</Text>
+      <View style={styles.item} onTouchEnd={() => navigation.navigate('attendance-details', { classData:classData,attendanceData:data })}>
+        <Text style={styles.itemTitle}>{data.date}</Text>
+        <Text style={styles.itemTitle}>Present: {data.present}</Text>
       </View>
     );
   };
@@ -47,12 +41,16 @@ export default function Attendance({ navigation }) {
               <Text style={styles.header}>QR ATTENDANCE</Text>
             </View>
             <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>Check Attendance</Text>
+              <Text style={styles.title}>Attendance</Text>
+              <Text style={styles.subtitle}>{classData.course_title}</Text>
             </View>
             <View style={styles.itemsWrapper}>
-              {classes.map((data, idx) => (
+              {attendance.map((data, idx) => (
                 <Item data={data} key={idx} />
               ))}
+            </View>
+            <View style={styles.footer}>
+              <CustomBtn title="Check Attendace" action={()=>navigation.navigate("check-attendance",{classId:classData.course_number})}/>
             </View>
           </View>
         </ScrollView>
@@ -78,9 +76,13 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#94dff5',
   },
+  subtitle:{
+    fontSize: 20,
+    color: '#94dff5',
+  },
   tittleWrapper: {
     width: '100%',
-    height: 70,
+    height: 100,
     flex: 0,
     justifyContent: 'center',
     alignItems: 'center',
@@ -131,4 +133,3 @@ const styles = StyleSheet.create({
     width: '90%',
   },
 });
-

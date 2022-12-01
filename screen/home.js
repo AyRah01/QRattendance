@@ -1,75 +1,123 @@
+import { Alert, BackHandler, Button, Image, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Button, ScrollView } from 'react-native';
 import { API_BASE } from '../config';
+import { setStatusBarBackgroundColor } from 'expo-status-bar';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import CustomBtn from '../components/CustomBtn/CustomBtn';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import useStorage from '../helper/useStorage';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function Home({ navigation }) {
-  const [classses, setClasses] = useState([])
+    const {save} = useStorage()
+   
+    
+    useFocusEffect(useCallback(()=>{
+      const backActionHandler = () => {
+        Alert.alert("Alert!", "Are you sure you want to go back?", [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel"
+          },
+          { text: "YES", onPress: () => BackHandler?.exitApp()
+          () }
+        ]);
+        return true;
+      };
+      BackHandler.addEventListener("hardwareBackPress", backActionHandler);
 
-  useEffect(()=>{
-    const reqClasses = async()=>{
-      const classsReq = await axios.get(API_BASE+"/getClasses")
+    return () =>
+      // clear/remove event listener
+      BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+    },[navigation]))
 
-      const classesData = classsReq.data
-       setClasses(classesData)
-       console.log(classesData)
-
+    const logout = ()=>{
+        save("user_id","")
+        navigation.navigate("login")
     }
-    reqClasses();
+    const Item = ({title, target}) => {
+        return(
+            <View style = {styles.item} onTouchEnd = {()=>navigation.navigate(target)}>
+                <Text style = {styles.itemTitle}>{title}</Text>
+            </View>
+        )
+    }
+   
 
-  },[])
-
-  const createClasss = () => {
-    navigation.navigate("addClass")
-  }
-  const ClassItem = ({ data }) => {
-    return (
-      <View key={data.id} style={styles.classItem} onTouchEnd = {()=>navigation.navigate("view-class",{
-        classId:data.id
-      })}>
-        <Text>{data.course_title}</Text>
-      </View>
-    );
-  };
   return (
-    <ScrollView>
-      <View style={styles.main}>
-      <Text style={styles.title}>Classes</Text>
-      <View style={styles.classList}>
-        {classses.map((data)=>(
-          <ClassItem data = {data} key={data.id}/>
-        )) }
-      </View>
-      <Button title='Add Class' onPress={createClasss}/>
-
+    <View style={{ flex: 1, backgroundColor: 'black' }}>
+      <SafeAreaView style={styles.mainWrapper}>
+        <View style={styles.body}>
+          <View style={styles.tittleWrapper}>
+            <Text style={styles.title}>HOME</Text>
+          </View>
+          <View style = {styles.itemsWrapper}>
+            <Item title = "A" target = "attendance"/>
+            <Item title = "S" target = "students"/>
+            <Item title = "C" target = "classes"/>
+            <Item title = "R" target = "reports"/>
+          </View>
+          <View style = {styles.btnWrapper}>
+            <CustomBtn title="Logout" action={logout}/>
+          </View>
+        </View>
+      </SafeAreaView>
     </View>
-    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  main: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  mainWrapper: {
+    flex: 0,
+    backgroundColor: 'white',
   },
-  classList:{
-    width:"100%",
+  body: {
+    flex: 1,
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  itemWrapper: {
     width: '100%',
-    marginBottom: 20,
-  },
-  classItem: {
-    padding: 20,
-    borderWidth: 1,
-    width: '99%',
-    marginBottom: 5,
-    borderRadius: 5,
+    height: '100%',
+    backgroundColor: '#0b172a',
   },
   title: {
-    fontSize: 50,
-    margin: 10,
+    fontSize: 30,
+    color: '#94dff5',
   },
+  tittleWrapper: {
+    width: '100%',
+    marginTop:50,
+    height: 80,
+    flex: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  itemsWrapper:{
+    flex:0,
+    justifyContent:'center',
+    alignItems:"center",
+    flexDirection:"row",
+    flexWrap:"wrap",
+    width:300,
+    height:400,
+  },
+  item:{
+    width:100,
+    height:80,
+    backgroundColor:"#e8d5c5",
+    borderRadius:10,
+    flex:0,
+    justifyContent:"center",
+    alignItems:"center",
+    margin:20
+  },
+  itemTitle:{
+    fontSize:60,
+    fontWeight:"bold"
+  },
+  btnWrapper:{
+    width:"90%",
+    height:30
+  }
 });
