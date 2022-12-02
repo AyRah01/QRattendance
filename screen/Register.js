@@ -1,4 +1,4 @@
-import { Alert, Button, Image, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
+import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
@@ -29,6 +29,7 @@ export default function Register({ navigation }) {
   return (
     <View style={{ flex: 1, backgroundColor: 'black' }}>
       <SafeAreaView style={styles.mainWrapper}>
+        <ScrollView>
         <View style={styles.body}>
           <Image
             style={{ width: 200, height: 130, marginBottom: 0, marginTop: 60 }}
@@ -94,6 +95,7 @@ export default function Register({ navigation }) {
             <CustomBtn width={100} height={20} title="Register" action={submit} />
           </View>
         </View>
+        </ScrollView>
       </SafeAreaView>
     </View>
   );

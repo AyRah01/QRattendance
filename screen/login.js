@@ -28,6 +28,7 @@ export default function Login({ navigation }) {
     if (!resData.success) Alert.alert('Login Failed', resData.msg);
     else {
       await save('user_id',resData.data.email)
+      await save('teacher', resData.data.firstname)
       navigation.navigate('home');
     }
   };

@@ -43,6 +43,7 @@ export default function AttendanceReport({ navigation, route }) {
             <View style={styles.tittleWrapper}>
               <Text style={styles.title}>Attendance</Text>
               <Text style={styles.subtitle}>{classData.course_title}</Text>
+              <Text style={styles.subtitle}>{classData.semester} Semester</Text>
             </View>
             <View style={styles.itemsWrapper}>
               {attendance.map((data, idx) => (

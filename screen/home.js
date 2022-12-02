@@ -10,10 +10,12 @@ import useStorage from '../helper/useStorage';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function Home({ navigation }) {
-    const {save} = useStorage()
+    const {save, getValueFor} = useStorage()
    
-    
+    const [teacher, setTeacher] = useState('')
     useFocusEffect(useCallback(()=>{
+      
+      getValueFor('teacher').then((val)=>setTeacher(val))
       const backActionHandler = () => {
         Alert.alert("Alert!", "Are you sure you want to go back?", [
           {
@@ -41,6 +43,7 @@ export default function Home({ navigation }) {
         return(
             <View style = {styles.item} onTouchEnd = {()=>navigation.navigate(target)}>
                 <Text style = {styles.itemTitle}>{title}</Text>
+                <Text style = {styles.itemsubtitle}>{target}</Text>
             </View>
         )
     }
@@ -50,6 +53,9 @@ export default function Home({ navigation }) {
     <View style={{ flex: 1, backgroundColor: 'black' }}>
       <SafeAreaView style={styles.mainWrapper}>
         <View style={styles.body}>
+        <View style={styles.headerWrapper}>
+              <Text style={styles.header}>HELLO TEACHER {teacher.toUpperCase()}</Text>
+            </View>
           <View style={styles.tittleWrapper}>
             <Text style={styles.title}>HOME</Text>
           </View>
@@ -104,7 +110,7 @@ const styles = StyleSheet.create({
   },
   item:{
     width:100,
-    height:80,
+    height:120,
     backgroundColor:"#e8d5c5",
     borderRadius:10,
     flex:0,
@@ -114,10 +120,27 @@ const styles = StyleSheet.create({
   },
   itemTitle:{
     fontSize:60,
-    fontWeight:"bold"
+    height:66,
+    fontWeight:"bold",
+    margin:0,
+    padding:0,
   },
+  
   btnWrapper:{
     width:"90%",
     height:30
-  }
+  },
+  header: {
+    fontSize: 15,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  headerWrapper: {
+    width: '100%',
+    height: 50,
+    flex: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#e8d5c5',
+  },
 });

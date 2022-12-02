@@ -44,6 +44,8 @@ export default function AttendaceDetails({ navigation, route }) {
             </View>
             <View style={styles.tittleWrapper}>
               <Text style={styles.title}>{classData.course_title}</Text>
+              <Text style={styles.subtitle}>{classData.semester} Semester</Text>
+
               <Text style={styles.subtitle}>{attendanceData.date}</Text>
             </View>
             <View style={styles.itemsWrapper}>
