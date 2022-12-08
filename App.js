@@ -10,7 +10,7 @@ import AttendanceDetails from './screen/AttendanceDetails';
 import Students from './screen/Students';
 import Enroll from './screen/Enroll';
 import Authenticator from './screen/Authenticator';
-import Report from './screen/report';
+import Report from './screen/Reports';
 import Login from './screen/login';
 import AddClass from './screen/AddClass';
 import ClassView from './screen/ClassView';
@@ -22,6 +22,8 @@ import AttendanceReport from './screen/AttendanceReport';
 import Register from './screen/Register';
 import Classes from './screen/Classes';
 import SaveQr from './screen/SaveQr';
+import ReportDetails from './screen/ReportsDetails';
+import SelectClass from './screen/SelectClass';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
@@ -29,32 +31,32 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={{headerShown: false}}
         initialRouteName={'authenticator'
         
       }
       >
-        <Stack.Screen name="authenticator" component={Authenticator} />
-        <Stack.Screen name="home" component={Home} />
-        <Stack.Screen name="addClass"  component={AddClass}/>
+        <Stack.Screen name="authenticator" component={Authenticator} options={{headerShown:false}} />
+        <Stack.Screen name="home" component={Home} options={{title:"Attendance Monitoring"}} />
+        <Stack.Screen name="addClass"  component={AddClass} options={{title:"Add Class"}}/>
 
-
-        <Stack.Screen name="menu" component={Menu} />
+        <Stack.Screen name="menu" component={Menu} options={{title:"Menu"}} />
         <Stack.Screen name="attendance" component={Attendance} />
-        <Stack.Screen name='attendance-details' component={AttendanceDetails}/>
+        <Stack.Screen name='attendance-details' component={AttendanceDetails} options={{title:"Attendace Record"}}/>
         <Stack.Screen name='students' component={Students}/>
         <Stack.Screen name='enroll-student' component={Enroll}/>
-        <Stack.Screen name="classes" component={Classes} />
-        <Stack.Screen name="report" component={Report} />
-        <Stack.Screen name="login" component={Login} />
-        <Stack.Screen name='register' component={Register}/>
-        <Stack.Screen name="view-class" component={ClassView} />
-        <Stack.Screen name="add-student" component={AddStudent} />
+        <Stack.Screen name="classes" component={Classes} options={{title:"Classes"}}  />
+        <Stack.Screen name="reports" component={Report} options={{title:"Attendace Reports"}}/>
+        <Stack.Screen name="select-class" component={SelectClass} options={{title:"Select Class"}}/>
+        <Stack.Screen name="view-reports" component={ReportDetails} options={{title:"Report Details"}}/>
+        <Stack.Screen name="login" component={Login} options={{headerShown:false}} />
+        <Stack.Screen name='register' component={Register} options={{headerShown:false}}/>
+        <Stack.Screen name="view-class" component={ClassView} options={{headerShown:true}} />
+        <Stack.Screen name="add-student" component={AddStudent} options={{title:"Add Student"}} />
         <Stack.Screen name = "view-qrcode" component={QRGenerator}/>
-        <Stack.Screen name="save-qr" component={SaveQr} />
+        <Stack.Screen name="save-qr" component={SaveQr} options={{title:"Save QR Code"}}/>
         <Stack.Screen name = "check-attendance" component={ScanAttendance}/>
-        <Stack.Screen name = "view-attendance" component={AttendanceReport}/>
-        <Stack.Screen name='student-details' component={StudentInformation}/>
+        <Stack.Screen name = "view-attendance" component={AttendanceReport} options={{title:"Attendance"}}/>
+        <Stack.Screen name='student-details' component={StudentInformation} options={{title:"Student Information"}}/>
 
 
 

@@ -7,9 +7,19 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Students({ navigation }) {
   const [students, setStudents] = useState([]);
+
+  useEffect(()=>{
+    navigation.setOptions({
+      headerTitle:"Students",
+      headerRight: () => (
+        <Ionicons name="add-circle-outline" size={32} color="black" onPress={()=>navigation.navigate("add-student")} />
+      ),
+    });
+  },[])
   useFocusEffect(
 
     useCallback(()=>{
@@ -25,36 +35,29 @@ export default function Students({ navigation }) {
 
   const Item = ({ data, target }) => {
     const fullname = data.firstname + ' ' + data.middlename + ' ' + data.lastname;
+    const yearSection = data.course + " "+data.year+" "+data.section
     return (
       <View style={styles.item} onTouchEnd={() => navigation.navigate('student-details', { data })}>
         <Text style={styles.itemTitle}>{fullname.toUpperCase()}</Text>
-        <Text style={styles.itemTitle}>{data.year_section}</Text>
+        <Text style={styles.itemTitle}>{yearSection}</Text>
       </View>
     );
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
-      <SafeAreaView style={styles.mainWrapper}>
+    <View style={{ flex: 1}}>
         <ScrollView>
           <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              <Text style={styles.header}>QR ATTENDANCE</Text>
-            </View>
-            <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>STUDENTS</Text>
+            <View style={styles.contentHeader}>
+              <Text style={styles.header}>Student List</Text>
             </View>
             <View style={styles.itemsWrapper}>
               {students.map((data, idx) => (
                 <Item data={data} key={idx} />
               ))}
             </View>
-            <View style={styles.footer}>
-              <CustomBtn title="Add Student" action={()=>navigation.navigate("add-student")}/>
             </View>
-          </View>
         </ScrollView>
-      </SafeAreaView>
     </View>
   );
 }
@@ -62,7 +65,6 @@ export default function Students({ navigation }) {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 0,
-    backgroundColor: 'white',
   },
   body: {
     flex: 1,
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
+    marginTop:10
   },
   title: {
     fontSize: 30,
@@ -83,9 +85,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  contentHeader: {
+    marginTop:0,
+    width: '100%',
+    flex: 0,
+    paddingLeft:20,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+
+  },
 
   header: {
-    fontSize: 15,
+    textAlign:"left",
+    fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },
@@ -95,7 +107,6 @@ const styles = StyleSheet.create({
     flex: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e8d5c5',
   },
   scrollList: {
     flex: 1,
@@ -118,11 +129,9 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     borderBottomWidth: 1,
-    borderColor: 'white',
   },
   itemTitle: {
     fontWeight: 'bold',
-    color: 'white',
   },
   footer: {
     height: 'auto',

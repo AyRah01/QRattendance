@@ -1,5 +1,5 @@
 
-import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
+import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
@@ -8,17 +8,19 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function Attendance({ navigation }) {
+export default function SelectClass({ navigation,route }) {
   const {getValueFor} = useStorage()
   const [classes, setClasses] = useState([])
+  const subjectData = route.params.classData
 
   
 
   useEffect(()=>{
     const reqClasses = async()=>{
       const email = await getValueFor("user_id")
-      const classsReq = await axios.get(API_BASE+"/getSubjects/"+email)
+      const classsReq = await axios.get(API_BASE+"/getClasses/"+email+"/"+subjectData.course_number)
 
       const classesData = classsReq.data
        setClasses(classesData)
@@ -31,10 +33,11 @@ export default function Attendance({ navigation }) {
 
   const Item = ({ data, target }) => {
     return (
-      <View style={styles.item} onTouchEnd = {()=>navigation.navigate("view-attendance",{classData:data})}>
-        <Text style={styles.itemTitle}>{data.course_title.toUpperCase()}</Text>
-        <Text style={styles.itemTitle}>{data.course_number}</Text>
+     <TouchableOpacity style={{width:'100%'}}>
+         <View style={styles.item} onTouchEnd = {()=>navigation.navigate("view-reports",{classData:data, subjectData:subjectData})}>
+        <Text style={styles.itemTitle}>{data.yearsection.toUpperCase()}</Text>
       </View>
+     </TouchableOpacity>
     );
   };
 
@@ -44,7 +47,7 @@ export default function Attendance({ navigation }) {
         <ScrollView>
           <View style={styles.body}>
             <View style={styles.headerWrapper}>
-              <Text style={styles.header}>CHOOSE A CLASS</Text>
+              <Text style={styles.header}>List of Classes</Text>
             </View>
             <View style={styles.itemsWrapper}>
               {classes.map((data, idx) => (

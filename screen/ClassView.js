@@ -7,73 +7,99 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ClassView({ navigation, route }) {
   const [students, setStudents] = useState([]);
-  const classData = route.params
+  const classData = route.params;
 
-  useFocusEffect(useCallback(()=>{
-    const reqStudents = async () => {
-      const classsReq = await axios.post(API_BASE + '/getStudents',{classId:classData.course_number});
-      const studentsData = classsReq.data;
-      setStudents(studentsData);
-      console.log(studentsData);
-    };
-    reqStudents()
-  },[navigation]));
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => 
+        <View style={styles.tittleWrapper}>
+          <Text style={styles.title}>{classData.course_number.toUpperCase()}</Text>
+          <Text style={styles.subTitle}>
+            {classData.course_title}
+          </Text>
+        </View>
+      ,
+      headerRight: () => (
+        <>
+          <Ionicons name="create-outline" size={25} color="black" onPress={editClass} />
+          <Ionicons name="trash-outline" size={25} color="orange" onPress={delClass} />
+        </>
+      ),
+    });
+  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const reqStudents = async () => {
+        const classsReq = await axios.post(API_BASE + '/getStudents', { classId: classData.course_number });
+        const studentsData = classsReq.data;
+        setStudents(studentsData);
+        console.log(studentsData);
+      };
+      reqStudents();
+    }, [navigation]),
+  );
 
   const delClass = () => {
-    Alert.alert("Delete Class?","Are you sure to delete this class?",[
-      {text:"No",onPress:()=>{return 0}},
-      {text:"Yes",onPress:confirmDelete}
-    ])
-  }
-  const confirmDelete = async()=>{
-    const deleteREq = await axios.post(API_BASE+"/deleteClass",{id:classData.id})
-    if(deleteREq.data.success)navigation.goBack()
-    else Alert.alert("Failed to Delete","An error occured while deleting student data")
-  }
+    Alert.alert('Delete Class?', 'Are you sure to delete this class?', [
+      {
+        text: 'No',
+        onPress: () => {
+          return 0;
+        },
+      },
+      { text: 'Yes', onPress: confirmDelete },
+    ]);
+  };
+  const confirmDelete = async () => {
+    const deleteREq = await axios.post(API_BASE + '/deleteClass', { id: classData.id });
+    if (deleteREq.data.success) navigation.goBack();
+    else Alert.alert('Failed to Delete', 'An error occured while deleting student data');
+  };
 
-  const editClass = ()=>{
-    navigation.navigate("addClass",{type:"edit", classData})
-  }
+  const editClass = () => {
+    navigation.navigate('addClass', { type: 'edit', classData });
+  };
   const Item = ({ data, target }) => {
     const fullname = data.firstname + ' ' + data.middlename + ' ' + data.lastname;
+    const yearSection = data.course+" "+data.year+" "+data.section
     return (
-      <View style={styles.item} onTouchEnd={() => navigation.navigate('student-details', { data,type:"class",classData})}>
+      <View
+        style={styles.item}
+        onTouchEnd={() => navigation.navigate('student-details', { data, type: 'class', classData })}
+      >
         <Text style={styles.itemTitle}>{fullname.toUpperCase()}</Text>
-        <Text style={styles.itemTitle}>{data.year_section}</Text>
+        <Text style={styles.itemTitle}>{yearSection}</Text>
       </View>
     );
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
+    <View style={{ flex: 1 }}>
       <SafeAreaView style={styles.mainWrapper}>
-        <ScrollView>
-          <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              <Text style={styles.header}>QR ATTENDANCE</Text>
-              <View style = {styles.headerBtn}>
-              <Button title='Edit' onPress={editClass} style = {styles.btn}/>
-              <Button title='Delete' color={"#c1012f"} onPress={delClass} style = {styles.btn}/>
+      <ScrollView>
 
-              </View>
-
+        <View style={styles.body}>
+        <View style={styles.contentHeader}>
+              <Text style={styles.title}>Students</Text>
             </View>
-            <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>{classData.course_title}</Text>
-              <Text style={styles.subTitle}>{classData.firstname + " " + classData.lastname}, {classData.semester} Semester</Text>
-            </View>
-            <View style={styles.itemsWrapper}>
-              {students.map((data, idx) => (
+          <View style={styles.itemsWrapper}>
+              {students?.length===0?(<Text>You have no students enrolled yet.</Text>):
+              students.map((data, idx) => (
                 <Item data={data} key={idx} />
               ))}
-            </View>
-            <View style={styles.footer}>
-              <CustomBtn title="Enroll Student" action={()=>navigation.navigate("enroll-student",{classId:classData.course_number})}/>
-            </View>
+              
           </View>
+          <View style={styles.footer}>
+            <CustomBtn
+              title="Enroll Student"
+              action={() => navigation.navigate('enroll-student', { classData })}
+            />
+          </View>
+        </View>
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -82,61 +108,58 @@ export default function ClassView({ navigation, route }) {
 
 const styles = StyleSheet.create({
   mainWrapper: {
-    flex: 0,
-    backgroundColor: 'white',
+    flex: 1,
+    margin:0,
+    padding:0
   },
   body: {
+    margin:0,
+    padding:0,
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
   },
   title: {
-    fontSize: 30,
-    color: '#94dff5',
-    fontWeight:"bold"
-
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-  subTitle:{
-    fontSize:15,
-    color: '#94dff5',
+  subTitle: {
+    fontSize: 15,
   },
   tittleWrapper: {
-    width: '100%',
-    height: 100,
     flex: 0,
+    height:"auto",
+    width:"90%",
+    paddingBottom:10,
+    paddingTop:10,
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    padding:10
   },
 
   header: {
-    fontSize: 15,
+    fontSize: 10,
     color: 'black',
     fontWeight: 'bold',
-    width:200
+    width: 200,
   },
-  headerWrapper: {
+  contentHeader: {
+    marginTop:0,
     width: '100%',
-    height: 50,
     flex: 0,
-    flexDirection:'row',
-    justifyContent: 'space-between',
+    paddingLeft:20,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+
+  },
+  headerBtn: {
+    flex: 0,
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: '#e8d5c5',
-    paddingLeft:10,
-    paddingRight:10
+    flexDirection: 'row',
   },
-  headerBtn:{
-    flex:0,
-    justifyContent:"flex-end",
-    alignItems:"center",
-    flexDirection:'row',
-  },
-  btn:{
-    marginRight:2,
+  btn: {
+    marginRight: 2,
   },
   scrollList: {
     flex: 1,
@@ -146,7 +169,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
-    height: "auto",
+    height: 'auto',
   },
   item: {
     width: '95%',
@@ -159,14 +182,13 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     borderBottomWidth: 1,
-    borderColor: 'white',
   },
   itemTitle: {
     fontWeight: 'bold',
-    color: 'white',
   },
   footer: {
+    width: "90%",
     height: 'auto',
-    width: '90%',
+    margin:10
   },
 });

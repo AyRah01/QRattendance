@@ -10,13 +10,29 @@ import * as MediaLibrary from 'expo-media-library';
 
 import QRCode from 'react-native-qrcode-svg';
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function StudentInformation({ route, navigation }) {
   const { data,type, classData } = route.params;
   const [qrRef, setQrRef] = useState(null);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <>
+          {/* <Ionicons name="create-outline" size={25} color="black" onPress={editClass} /> */}
+          {type === "class"?(<Button title='Unenroll' color={"#c1012f"} onPress={unEnroll}/>):(<Ionicons name="trash-outline" size={25} color="orange" onPress={delStudent} />
+)}
+
+        </>
+      ),
+    });
+  }, []);
   const saveQrCode = async () => {
     navigation.navigate("save-qr",{data})
   };
+
+
 
   const delStudent = () => {
     Alert.alert("Delete?","Are you sure to delete this student?",[
@@ -45,25 +61,18 @@ export default function StudentInformation({ route, navigation }) {
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
           <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              {type === "class"?(<Text style={styles.header}>{classData.course_title}</Text>
-):(<Text style={styles.header}>QR ATTENDANCE</Text>
-)}
-              {type === "class"?(<Button title='Unenroll' color={"#c1012f"} onPress={unEnroll}/>):(<Button title='Delete' color={"#c1012f"} onPress={delStudent}/>)}
-
-            </View>
-            <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>Student Information</Text>
-            </View>
             <View style={styles.detailsWrapper}>
               <StudentInfoBox label="ID Number:" value={data.student_id.toUpperCase()} />
               <StudentInfoBox label="First Name:" value={data.firstname.toUpperCase()} />
               <StudentInfoBox label="Middle Name:" value={data.middlename.toUpperCase()} />
               <StudentInfoBox label="Last Name:" value={data.lastname.toUpperCase()} />
               <StudentInfoBox label="Gender:" value={data.gender.toUpperCase()} />
-              <StudentInfoBox label="Course/Year and Section:" value={data.year_section.toUpperCase()} />
+              <StudentInfoBox label="Course:" value={data.course} />
+              <StudentInfoBox label="Year:" value={data.year} />
+              <StudentInfoBox label="Section:" value={data.section} />
+              
               <View style={styles.qrContainer}>
-                <QRCode value="Just some string value" getRef={(c) => setQrRef(c)} size = {200}  backgroundColor='#ffffff'/>
+                <QRCode value={data.student_id} getRef={(c) => setQrRef(c)} size = {200}  backgroundColor='#ffffff'/>
               </View>
               <View style={styles.btnWrapper}>
                 <CustomBtn title="Save QR Code" type={'primary'} action={saveQrCode}/>
@@ -94,7 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 30,

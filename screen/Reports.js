@@ -8,8 +8,9 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function Attendance({ navigation }) {
+export default function Reports({ navigation }) {
   const {getValueFor} = useStorage()
   const [classes, setClasses] = useState([])
 
@@ -31,7 +32,7 @@ export default function Attendance({ navigation }) {
 
   const Item = ({ data, target }) => {
     return (
-      <View style={styles.item} onTouchEnd = {()=>navigation.navigate("view-attendance",{classData:data})}>
+      <View style={styles.item} onTouchEnd = {()=>navigation.navigate("select-class",{classData:data})}>
         <Text style={styles.itemTitle}>{data.course_title.toUpperCase()}</Text>
         <Text style={styles.itemTitle}>{data.course_number}</Text>
       </View>
@@ -44,7 +45,7 @@ export default function Attendance({ navigation }) {
         <ScrollView>
           <View style={styles.body}>
             <View style={styles.headerWrapper}>
-              <Text style={styles.header}>CHOOSE A CLASS</Text>
+              <Text style={styles.header}>CHOOSE A SUBJECT</Text>
             </View>
             <View style={styles.itemsWrapper}>
               {classes.map((data, idx) => (

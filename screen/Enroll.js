@@ -9,9 +9,20 @@ export default function Enroll({ navigation, route }) {
   const [students, setStudents] = useState([])
   const [toSearch, setToSearch] = useState("")
 
-  const classId = route.params.classId 
+  const {course_number,course_title} = route.params.classData 
 
-
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => 
+        <View style={styles.tittleWrapper}>
+          <Text style={styles.title}>{course_number.toUpperCase()}</Text>
+          <Text style={styles.subTitle}>
+            {course_title}
+          </Text>
+        </View>
+      ,
+    });
+  }, []);
   useEffect(() => {
     if(toSearch.length > 3)search()
   }, [toSearch]);
@@ -25,9 +36,10 @@ export default function Enroll({ navigation, route }) {
      }
   }
   const submitStudent = async(studentId) => {
-        const enrollReq = await axios.post(API_BASE+"/enroll",{classId, studentId})
+        const enrollReq = await axios.post(API_BASE+"/enroll",{classId:course_number, studentId:studentId})
         if(enrollReq.status !== 200)return Alert.alert("Server Error", "Sorry, cannot reach the server at the moment. Please try again later.")
         const enrollRes = enrollReq.data
+        if(enrollRes.code === 11)return Alert.alert("Already Enrolled", "This student is already enrolled in this class.")
         if(!enrollRes.success)return Alert.alert("Failed to Enroll", "Sorry, an error has occured while enrolling student. Please try again later.")
 
         navigation.goBack()
@@ -43,13 +55,10 @@ export default function Enroll({ navigation, route }) {
     );
   };
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
+    <View style={{ flex: 1}}>
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
           <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              <Text style={styles.header}>QR ATTENDANCE</Text>
-            </View>
             <View style={styles.tittleWrapper}>
               <Text style={styles.title}>Enroll Student</Text>
             </View>
@@ -76,7 +85,6 @@ export default function Enroll({ navigation, route }) {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 0,
-    backgroundColor: 'white',
   },
   body: {
     flex: 1,
@@ -84,20 +92,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
   },
   title: {
-    fontSize: 30,
-    color: '#94dff5',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  subTitle: {
+    fontSize: 15,
   },
   tittleWrapper: {
-    width: '100%',
-    height: 70,
     flex: 0,
+    height:"auto",
+    width:"90%",
+    paddingBottom:10,
+    paddingTop:10,
     justifyContent: 'center',
-    alignItems: 'center',
   },
-
   header: {
     fontSize: 15,
     color: 'black',
@@ -109,7 +119,6 @@ const styles = StyleSheet.create({
     flex: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e8d5c5',
   },
   inputWrapper: {
     justifyContent: 'flex-start',
@@ -145,7 +154,6 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     borderBottomWidth: 1,
-    borderColor: 'white',
   },
   detailsTitle: {
     fontWeight: 'bold',
@@ -155,7 +163,6 @@ const styles = StyleSheet.create({
   qrContainer: {
     padding: 10,
     borderWidth: 1,
-    borderColor: 'white',
     marginTop: 50,
   },
   btnWrapper: {
@@ -177,10 +184,8 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     borderBottomWidth: 1,
-    borderColor: 'white',
   },
   itemTitle: {
     fontWeight: 'bold',
-    color: 'white',
   },
 });

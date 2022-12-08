@@ -1,47 +1,62 @@
-import { StyleSheet, Text, ScrollView, View, TextInput, Button, Alert, ToastAndroid, PermissionsAndroid } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  ScrollView,
+  View,
+  TextInput,
+  Button,
+  Alert,
+  ToastAndroid,
+  PermissionsAndroid,
+} from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
+import * as MediaLibrary from 'expo-media-library';
 
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
 import expoCameraroll from 'expo-cameraroll';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SaveQr({ route, navigation }) {
   const { data } = route.params;
-  const viewshot = useRef()
+  const viewshot = useRef();
 
   const [qrRef, setQrRef] = useState(null);
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <View style={{backgroundColor:"#3464f4",flex:0,flexDirection:'row',alignItems:"center",padding:5, borderRadius:5}} onTouchEnd={saveQrCode}>
+        <Text style={{color:"white", fontWeight:"bold"}}>DOWNLOAD</Text>
+        <Ionicons name="arrow-down" size={20} color="white"  />
+      </View>,
+    });
+  }, []);
 
   const saveQrCode = async () => {
-    const uri = await viewshot.current.capture()
-    if (Platform.OS === 'android') {
-        const granted = await hasAndroidPermission();
-        if (!granted) {
-            return;
-        }
+    const uri = await viewshot.current.capture();
+    const granted = await hasAndroidPermission();
+    if (!granted) {
+      return;
     }
-    const image = expoCameraroll.save(uri,"jpg");
+    const image = await expoCameraroll.save(uri, 'jpg');
     if (image) {
-          Alert.alert('Image saved', 'Successfully saved image to your gallery.',
-              [{text: 'OK', onPress: () => {}}],
-              {cancelable: false},
-          );
+      Alert.alert('Image saved', 'Successfully saved image to your gallery.', [{ text: 'OK', onPress: () => {} }], {
+        cancelable: false,
+      });
     }
   };
   async function hasAndroidPermission() {
-    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
-  
-    const hasPermission = await PermissionsAndroid.check(permission);
-    if (hasPermission) {
-      return true;
-    }
-  
-    const status = await PermissionsAndroid.request(permission);
-    return status === 'granted';
+    const permitted = await MediaLibrary.getPermissionsAsync();
+
+    if (permitted.status === 'granted') return true;
+
+    const perms = await MediaLibrary.requestPermissionsAsync();
+    if (perms.status !== 'granted') return false;
+    return true;
   }
 
   return (
@@ -49,28 +64,24 @@ export default function SaveQr({ route, navigation }) {
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
           <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              <Text style={styles.header}>QR ATTENDANCE</Text>
-            </View>
             <View style={styles.tittleWrapper}></View>
-            <ViewShot ref={viewshot} options={{ format: "jpg", quality: 0.9 }} style = {{width:"100%"}}>
-            <View style={styles.detailsWrapper}>
-              <View style={styles.qrContainer}>
-                <QRCode value="Just some string value" getRef={(c) => setQrRef(c)} size={200} />
+            <ViewShot ref={viewshot} options={{ format: 'jpg', quality: 0.9 }} style={styles.viewshot}>
+              <View style={styles.detailsWrapper}>
+                <View style={styles.qrContainer}>
+                  <QRCode value={data.student_id} size={200} />
+                </View>
+                <Text style={styles.info}>{data.student_id.toUpperCase()}</Text>
+                <Text style={styles.info}>
+                  {data.lastname.toUpperCase() +
+                    ', ' +
+                    data.firstname.toUpperCase() +
+                    ' ' +
+                    data.middlename.substring(0, 1).toUpperCase()}
+                </Text>
+                <Text style={styles.info}>{data.gender.toUpperCase() || 'Undefined'}</Text>
+                <Text style={styles.info}>{data.course + ' ' + data.year + ' ' + data.section} </Text>
               </View>
-              <Text style = {styles.info}>
-                {
-                data.lastname.toUpperCase()+ ", "+ 
-                data.firstname.toUpperCase()+ " "+
-                data.middlename.substring(0,1).toUpperCase()+ ". "+
-                data.gender.toUpperCase()+ ", "+
-                data.student_id.toUpperCase() + ", "+
-                data.year_section.toUpperCase()}</Text>
-            </View>
             </ViewShot>
-            <View style={styles.btnWrapper}>
-                <CustomBtn title="Save" type={'primary'} action={saveQrCode} />
-              </View>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -79,7 +90,7 @@ export default function SaveQr({ route, navigation }) {
 }
 const styles = StyleSheet.create({
   mainWrapper: {
-    flex: 0,
+    flex: 1,
     backgroundColor: 'white',
   },
   body: {
@@ -88,11 +99,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
   },
   title: {
     fontSize: 30,
-    color: '#94dff5',
+    color: 'black',
   },
   tittleWrapper: {
     width: '100%',
@@ -102,6 +112,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  viewshot: {
+    width: '100%',
+    backgroundColor: 'white',
+    flex: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 40,
+  },
   header: {
     fontSize: 15,
     color: 'black',
@@ -115,21 +133,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#e8d5c5',
   },
-    detailsWrapper: {
+  detailsWrapper: {
     flex: 0,
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
     height: 'auto',
   },
-  info:{
-    flex:1,
-    color:"#e8d5c5",
-    fontWeight:"bold",
-    fontSize:20,
-    width:"90%",
-    textAlign:"center",
-    margin:10
+  info: {
+    flex: 1,
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 0,
   },
   qrContainer: {
     width: 'auto',

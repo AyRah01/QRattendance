@@ -1,11 +1,12 @@
 import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function AttendanceReport({ navigation, route }) {
   const [attendance, setAttendance] = useState([]);
@@ -13,6 +14,10 @@ export default function AttendanceReport({ navigation, route }) {
   
 
   useEffect(() => {
+    
+  }, []);
+
+  useFocusEffect(useCallback(()=>{
     const reqClasses = async () => {
       const attendanceReq = await axios.post(API_BASE + '/getAttendance',{classId:classData.course_number});
 
@@ -21,7 +26,7 @@ export default function AttendanceReport({ navigation, route }) {
       console.log(attendanceData);
     };
     reqClasses();
-  }, []);
+  },[]))
 
   const Item = ({ data, target }) => {
     return (
@@ -33,16 +38,13 @@ export default function AttendanceReport({ navigation, route }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
+    <View style={{ flex: 1 }}>
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
           <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              <Text style={styles.header}>QR ATTENDANCE</Text>
-            </View>
             <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>Attendance</Text>
-              <Text style={styles.subtitle}>{classData.course_title}</Text>
+            <Text style={styles.title}>{classData.course_number}</Text>
+              <Text style={styles.title}>{classData.course_title}</Text>
               <Text style={styles.subtitle}>{classData.semester} Semester</Text>
             </View>
             <View style={styles.itemsWrapper}>
@@ -51,7 +53,7 @@ export default function AttendanceReport({ navigation, route }) {
               ))}
             </View>
             <View style={styles.footer}>
-              <CustomBtn title="Check Attendace" action={()=>navigation.navigate("check-attendance",{classId:classData.course_number})}/>
+              <CustomBtn title="Check Attendace" action={()=>navigation.navigate("check-attendance",classData)}/>
             </View>
           </View>
         </ScrollView>
@@ -63,7 +65,6 @@ export default function AttendanceReport({ navigation, route }) {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 0,
-    backgroundColor: 'white',
   },
   body: {
     flex: 1,
@@ -71,15 +72,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
   },
   title: {
-    fontSize: 30,
-    color: '#94dff5',
+    fontSize: 20,
+    fontWeight:'bold'
   },
   subtitle:{
     fontSize: 20,
-    color: '#94dff5',
   },
   tittleWrapper: {
     width: '100%',
@@ -100,7 +99,6 @@ const styles = StyleSheet.create({
     flex: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e8d5c5',
   },
   scrollList: {
     flex: 1,
@@ -123,11 +121,9 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     borderBottomWidth: 1,
-    borderColor: 'white',
   },
   itemTitle: {
     fontWeight: 'bold',
-    color: 'white',
   },
   footer: {
     height: 'auto',

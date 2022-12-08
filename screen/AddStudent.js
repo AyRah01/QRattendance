@@ -5,14 +5,20 @@ import { API_BASE } from '../config';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
-import { courses } from '../config';
 export default function AddStudent({ navigation }) {
   const [studentId, setStudentId] = useState('');
   const [firstname, setfirstname] = useState('');
   const [middlename, setMiddlename] = useState('');
   const [lastname, setLastname] = useState('');
-  const [courseYearSec, setCourseYearSec] = useState('BSIT 1A');
+  const [course, setCourse] = useState('BSIT');
+  const [year, setYear] = useState('1');
+  const [section, setSection] = useState('A');
+  
   const [gender, setGender] = useState("Male")
+
+  const courses = ["BSIT", "COE", "SOA", "CBM"]
+  const sections = ["A","B","C","D","E","F","G"]
+  const years = ['1','2','3','4']
 
 
   useEffect(() => {}, []);
@@ -25,7 +31,9 @@ export default function AddStudent({ navigation }) {
       lastname,
       gender,
       studentId,
-      courseYearSec,
+      course,
+      year,
+      section
     });
     const studentData = addStudentReq.data;
     console.log(studentData);
@@ -33,21 +41,14 @@ export default function AddStudent({ navigation }) {
       if (studentData.code === 'duplicate') return Alert.alert('Failed to add Student', 'Student ID already exists.');
       else return Alert.alert('Failed to add Student', 'There was an error while saving data');
     }
-    const data = { firstname, middlename, lastname,gender, student_id: studentId, year_section: courseYearSec };
+    const data = { firstname, middlename, lastname,gender, student_id: studentId, course, year, section };
 
     return navigation.navigate('student-details', { data });
   };
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
-      <SafeAreaView style={styles.mainWrapper}>
+    <View style={{ flex: 1 }}>
         <ScrollView>
           <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              <Text style={styles.header}>QR ATTENDANCE</Text>
-            </View>
-            <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>Add Student</Text>
-            </View>
             <View style={styles.details}>
                 <Text style={styles.detailsTitle}>ID Number</Text>
                 <TextInput style={styles.input} defaultValue={studentId} onChangeText={(e) => setStudentId(e)} />
@@ -80,24 +81,49 @@ export default function AddStudent({ navigation }) {
               
 
               <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Course, Year & Section</Text>
+                <Text style={styles.detailsTitle}>Course</Text>
                 <Picker
                 style={{flex:1, height:50}}
-                  selectedValue={courseYearSec}
-                  onValueChange={(itemValue, itemIndex) => setCourseYearSec(itemValue)}
+                  selectedValue={course}
+                  onValueChange={(itemValue, itemIndex) => setCourse(itemValue)}
                 >                  
-                  {courses.map(({label,value})=>(
-                    <Picker.Item label={label} value={value} key = {value} />
+                  {courses.map((value,idx)=>(
+                    <Picker.Item label={value} value={value} key = {idx} />
                   ))}
                 </Picker>
               </View>
+              <View style={styles.details}>
+                <Text style={styles.detailsTitle}>Year</Text>
+                <Picker
+                style={{flex:1, height:50}}
+                  selectedValue={year}
+                  onValueChange={(itemValue, itemIndex) => setYear(itemValue)}
+                >                  
+                  {years.map((value,idx)=>(
+                    <Picker.Item label={value} value={value} key = {idx} />
+                  ))}
+                </Picker>
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.detailsTitle}>Section</Text>
+                <Picker
+                style={{flex:1, height:50}}
+                  selectedValue={section}
+                  onValueChange={(itemValue, itemIndex) => setSection(itemValue)}
+                >                  
+                  {sections.map((value,idx)=>(
+                    <Picker.Item label={value} value={value} key = {idx} />
+                  ))}
+                </Picker>
+              </View>
+            
+            
               <View style={styles.btnWrapper}>
-                <CustomBtn title="Add Student" type={'primary'} action={submit} />
+                <Button onPress={submit} title="Save" />
               </View>
             </View>
           </View>
         </ScrollView>
-      </SafeAreaView>
     </View>
   );
 }
@@ -105,7 +131,6 @@ export default function AddStudent({ navigation }) {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 0,
-    backgroundColor: 'white',
   },
   body: {
     flex: 1,
@@ -113,7 +138,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
   },
   title: {
     fontSize: 30,
@@ -138,7 +162,6 @@ const styles = StyleSheet.create({
     flex: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e8d5c5',
   },
   inputWrapper: {
     justifyContent: 'flex-start',
@@ -187,7 +210,8 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   btnWrapper: {
-    width: 100,
+    width: "100%",
+    padding:10,
     margin: 10,
   },
 });

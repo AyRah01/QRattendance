@@ -13,7 +13,7 @@ export default function AddClass({ navigation, route }) {
 
   const [courseNumber, setCourseNumber] = useState(classData?.course_number);
   const [courseTitle, setCourseTitle] = useState(classData?.course_title);
-  const [semester, setSemester] = useState(classData?.semester);
+  const [semester, setSemester] = useState(classData?.semester || "1");
   const [schoolYear, setSchoolYear] = useState(classData?.school_year);
   useEffect(() => {}, []);
 
@@ -27,16 +27,9 @@ export default function AddClass({ navigation, route }) {
     navigation.navigate("classes")
   }
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
-      <SafeAreaView style={styles.mainWrapper}>
+    <View style={{ flex: 1 }}>
         <ScrollView>
           <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              <Text style={styles.header}>QR ATTENDANCE</Text>
-            </View>
-            <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>{type==="edit"?"Edit Class":"Add Class"}</Text>
-            </View>
             <View style={styles.detailsWrapper}>
               <View style={styles.details}>
                 <Text style={styles.detailsTitle}>Course Number</Text>
@@ -54,9 +47,9 @@ export default function AddClass({ navigation, route }) {
                   selectedValue={semester}
                   onValueChange={(itemValue, itemIndex) => setSemester(itemValue)}
                 >                  
-                    <Picker.Item label="First"value="1" />
+                    <Picker.Item label="First"value="1st" />
                     
-                    <Picker.Item label="Second"value="2" />
+                    <Picker.Item label="Second"value="2nd" />
                 </Picker>
               </View>
             <View style={styles.details}>
@@ -70,7 +63,6 @@ export default function AddClass({ navigation, route }) {
             </View>
           </View>
         </ScrollView>
-      </SafeAreaView>
     </View>
   );
 }
@@ -78,7 +70,6 @@ export default function AddClass({ navigation, route }) {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 0,
-    backgroundColor: 'white',
   },
   body: {
     flex: 1,
@@ -86,7 +77,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
   },
   title: {
     fontSize: 30,

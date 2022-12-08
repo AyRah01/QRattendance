@@ -15,7 +15,7 @@ export default function AttendaceDetails({ navigation, route }) {
 
   useEffect(() => {
     const reqClasses = async () => {
-      const classsReq = await axios.post(API_BASE + '/attendanceDetails',{date:attendanceData.date});
+      const classsReq = await axios.post(API_BASE + '/attendanceDetails',{date:attendanceData.date, classId:classData.course_number});
 
       const studentsData = classsReq.data;
       setStudents(studentsData);
@@ -26,24 +26,23 @@ export default function AttendaceDetails({ navigation, route }) {
 
   const Item = ({ data, target }) => {
     const fullname = data.firstname + ' ' + data.middlename + ' ' + data.lastname;
+    const yearSection = data.course+" "+data.year+" "+data.section
     return (
       <View style={styles.item} onTouchEnd={() => navigation.navigate('student-details', { data })}>
         <Text style={styles.itemTitle}>{fullname.toUpperCase()}</Text>
-        <Text style={styles.itemTitle}>{data.year_section}</Text>
+        <Text style={styles.itemTitle}>{yearSection}</Text>
       </View>
     );
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
+    <View style={{ flex: 1}}>
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
           <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              <Text style={styles.header}>QR ATTENDANCE</Text>
-            </View>
             <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>{classData.course_title}</Text>
+            <Text style={styles.title}>{classData.course_number.toUpperCase()}</Text>
+              <Text style={styles.title}>{classData.course_title.toUpperCase()}</Text>
               <Text style={styles.subtitle}>{classData.semester} Semester</Text>
 
               <Text style={styles.subtitle}>{attendanceData.date}</Text>
@@ -64,7 +63,6 @@ export default function AttendaceDetails({ navigation, route }) {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 0,
-    backgroundColor: 'white',
   },
   body: {
     flex: 1,
@@ -72,15 +70,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
   },
   title: {
-    fontSize: 30,
-    color: '#94dff5',
+    fontSize: 20,
+    fontWeight:"bold"
   },
   subtitle:{
     fontSize: 20,
-    color: '#94dff5',
   },
   tittleWrapper: {
     width: '100%',
@@ -101,7 +97,6 @@ const styles = StyleSheet.create({
     flex: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e8d5c5',
   },
   scrollList: {
     flex: 1,
@@ -128,7 +123,6 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontWeight: 'bold',
-    color: 'white',
   },
   footer: {
     height: 'auto',

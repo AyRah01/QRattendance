@@ -27,7 +27,7 @@ export default function Register({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
+    <View style={{ flex: 1}}>
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
         <View style={styles.body}>
@@ -41,7 +41,6 @@ export default function Register({ navigation }) {
               defaultValue={firstname}
               onChangeText={(e) => setfirstname(e)}
               placeholder={'Firstname:'}
-              placeholderTextColor="#e8d5c5"
             />
           </View>
           <View style={styles.inputWrapper}>
@@ -50,7 +49,6 @@ export default function Register({ navigation }) {
               defaultValue={middlename}
               onChangeText={(e) => setMiddlename(e)}
               placeholder={'Middlename:'}
-              placeholderTextColor="#e8d5c5"
             />
           </View>
           <View style={styles.inputWrapper}>
@@ -59,7 +57,6 @@ export default function Register({ navigation }) {
               defaultValue={lastname}
               onChangeText={(e) => setLastname(e)}
               placeholder={'Lastname:'}
-              placeholderTextColor="#e8d5c5"
             />
           </View>
           <View style={styles.inputWrapper}>
@@ -68,7 +65,6 @@ export default function Register({ navigation }) {
               defaultValue={email}
               onChangeText={(e) => setEmail(e)}
               placeholder={'Username:'}
-              placeholderTextColor="#e8d5c5"
             />
           </View>
           <View style={styles.inputWrapper}>
@@ -78,7 +74,6 @@ export default function Register({ navigation }) {
               secureTextEntry={true}
               onChangeText={(e) => setPassword(e)}
               placeholder={'Password:'}
-              placeholderTextColor="#e8d5c5"
             />
           </View>
           <View style={styles.inputWrapper}>
@@ -88,7 +83,6 @@ export default function Register({ navigation }) {
               secureTextEntry={true}
               onChangeText={(e) => setConfirmpass(e)}
               placeholder={'Confirm Password:'}
-              placeholderTextColor="#e8d5c5"
             />
           </View>
           <View style={styles.btnWrapper}>
@@ -104,7 +98,6 @@ export default function Register({ navigation }) {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 0,
-    backgroundColor: 'white',
   },
   body: {
     flex: 1,
@@ -112,7 +105,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
   },
   title: {
     fontSize: 60,
@@ -131,8 +123,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '70%',
     borderRadius: 10,
-    borderColor: '#e8d5c5',
-    color: '#e8d5c5',
     paddingLeft: 5,
     paddingRight: 5,
     paddingTop: 25,

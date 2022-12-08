@@ -3,22 +3,28 @@ import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, useColor
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
-import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Classes({ navigation }) {
   const {getValueFor} = useStorage()
   const [classes, setClasses] = useState([])
 
 
+  useEffect(()=>{
+    navigation.setOptions({
+      headerRight: () => (
+        <Ionicons name="add-circle-outline" size={32} color="black" onPress={()=>navigation.navigate("addClass",{type: "add", data:null})} />
+      ),
+    });
+  },[])
   useFocusEffect(useCallback(()=>{
     const reqClasses = async()=>{
       const email = await getValueFor("user_id")
-      const classsReq = await axios.get(API_BASE+"/getClasses/"+email)
+      const classsReq = await axios.get(API_BASE+"/getSubjects/"+email)
 
       const classesData = classsReq.data
        setClasses(classesData)
@@ -39,23 +45,15 @@ export default function Classes({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
+    <View style={{ flex: 1}}>
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
           <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              <Text style={styles.header}>QR ATTENDANCE</Text>
-            </View>
-            <View style={styles.tittleWrapper}>
-              <Text style={styles.title}>Classes</Text>
-            </View>
             <View style={styles.itemsWrapper}>
-              {classes.map((data, idx) => (
+              {classes?.length === 0?(<Text>You have no class yet.</Text>):
+              classes.map((data, idx) => (
                 <Item data={data} key={idx} />
               ))}
-            </View>
-            <View style={styles.footer}>
-              <CustomBtn title="Add Class" action={()=>navigation.navigate("addClass",{type:"add"})}/>
             </View>
           </View>
         </ScrollView>
@@ -67,7 +65,6 @@ export default function Classes({ navigation }) {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 0,
-    backgroundColor: 'white',
   },
   body: {
     flex: 1,
@@ -75,7 +72,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: '#000104',
   },
   title: {
     fontSize: 30,
@@ -93,14 +89,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'black',
     fontWeight: 'bold',
-  },
-  headerWrapper: {
-    width: '100%',
-    height: 50,
-    flex: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#e8d5c5',
   },
   scrollList: {
     flex: 1,
@@ -123,11 +111,9 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     borderBottomWidth: 1,
-    borderColor: 'white',
   },
   itemTitle: {
     fontWeight: 'bold',
-    color: 'white',
   },
   footer: {
     height: 'auto',

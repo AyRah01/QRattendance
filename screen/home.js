@@ -8,37 +8,48 @@ import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Home({ navigation }) {
     const {save, getValueFor} = useStorage()
    
     const [teacher, setTeacher] = useState('')
+
+
+
+    React.useEffect(() => {
+      navigation.setOptions({
+        headerTitle:()=>(
+          <View style = {styles.appHeader}>
+            <Text style={styles.appTitle}>Mobile Based Class Attendance Monitoring System via QR Code</Text>
+          </View>
+        ),
+        headerRight: () => (
+          <Ionicons name="menu-outline" size={32} color="black" onPress={()=>navigation.navigate("menu")} />
+        ),
+      });
+    }, [navigation]);
     useFocusEffect(useCallback(()=>{
       
       getValueFor('teacher').then((val)=>setTeacher(val))
       const backActionHandler = () => {
-        Alert.alert("Alert!", "Are you sure you want to go back?", [
+        Alert.alert("Exit?", "Are you sure you want to close the app?", [
           {
             text: "Cancel",
             onPress: () => null,
             style: "cancel"
           },
-          { text: "YES", onPress: () => BackHandler?.exitApp()
+          { text: "YES", onPress: () => BackHandler!==undefined?BackHandler.exitApp():""
           () }
         ]);
         return true;
       };
       BackHandler.addEventListener("hardwareBackPress", backActionHandler);
 
-    return () =>
-      // clear/remove event listener
-      BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
-    },[navigation]))
+    return () => BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
 
-    const logout = ()=>{
-        save("user_id","")
-        navigation.navigate("login")
-    }
+
+    },[navigation]))
     const Item = ({title, target}) => {
         return(
             <View style = {styles.item} onTouchEnd = {()=>navigation.navigate(target)}>
@@ -50,42 +61,43 @@ export default function Home({ navigation }) {
    
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
-      <SafeAreaView style={styles.mainWrapper}>
+    <View style={styles.main}>
         <View style={styles.body}>
         <View style={styles.headerWrapper}>
-              <Text style={styles.header}>HELLO TEACHER {teacher.toUpperCase()}</Text>
+              <Text style={styles.header}>HELLO, TEACHER {teacher.toUpperCase()}</Text>
             </View>
-          <View style={styles.tittleWrapper}>
-            <Text style={styles.title}>HOME</Text>
-          </View>
           <View style = {styles.itemsWrapper}>
             <Item title = "A" target = "attendance"/>
             <Item title = "S" target = "students"/>
             <Item title = "C" target = "classes"/>
             <Item title = "R" target = "reports"/>
           </View>
-          <View style = {styles.btnWrapper}>
-            <CustomBtn title="Logout" action={logout}/>
-          </View>
         </View>
-      </SafeAreaView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  main: {
+    flex: 1
+  },
   mainWrapper: {
     flex: 0,
-    backgroundColor: 'white',
   },
   body: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#0b172a',
+    backgroundColor: 'white',
+  },
+  appHeader:{
+    flex:0,
+    height:"auto",
+    width:"93%",
+    padding:10
+  },
+  appTitle:{
+    fontSize:18
   },
   title: {
     fontSize: 30,
@@ -136,11 +148,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   headerWrapper: {
-    width: '100%',
+    width: '90%',
     height: 50,
     flex: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e8d5c5',
+    marginBottom:30
+
   },
 });
