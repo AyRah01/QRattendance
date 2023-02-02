@@ -9,7 +9,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
 import { Ionicons } from '@expo/vector-icons';
 import LogoWest from './../assets/westlogo.png';
-import Sample from './../assets/sample.jpg'
 import {headerStyle, colors} from './../config'
 import Header from './Header';
 export default function Attendance({ navigation }) {

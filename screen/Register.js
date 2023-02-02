@@ -93,7 +93,7 @@ export default function Register({ navigation }) {
 
           </View>
           <View style={styles.btnWrapper}>
-            <Button color={colors.primary} title = "Register"/>
+            <Button color={colors.primary} title = "Register" onPress={submit}/>
           </View>
         </View>
         </ScrollView>

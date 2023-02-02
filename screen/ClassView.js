@@ -9,12 +9,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from './../config';
+import useStorage from '../helper/useStorage';
 import Header from './Header';
 import Footer from './Footer';
 export default function ClassView({ navigation, route }) {
   const [students, setStudents] = useState([]);
   const classData = route.params;
 
+  const {getValueFor} = useStorage()
   useEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
@@ -29,7 +31,8 @@ export default function ClassView({ navigation, route }) {
   useFocusEffect(
     useCallback(() => {
       const reqStudents = async () => {
-        const classsReq = await axios.post(API_BASE + '/getStudents', { classId: classData.course_number });
+        const teacherId = await getValueFor('user_id')
+        const classsReq = await axios.post(API_BASE + '/getStudents', { classId: classData.course_number,teacherId:teacherId });
         const studentsData = classsReq.data;
         setStudents(studentsData);
         console.log(studentsData);

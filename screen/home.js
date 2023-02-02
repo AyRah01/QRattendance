@@ -11,7 +11,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, headerStyle } from './../config';
 import LogoWest from './../assets/westlogo.png';
-import Sample from './../assets/sample.jpg'
 import { LinearGradient } from 'react-native-svg';
 import Student from './../assets/icons/students.png'
 import Class from './../assets/icons/class.png'
@@ -158,7 +157,7 @@ const styles = StyleSheet.create({
   },
   wellcomeBox: {
     width: '100%',
-    height: 80,
+    height: "auto",
     flex: 0,
     borderColor: colors.warning,
     justifyContent: 'flex-start',
@@ -166,12 +165,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 50,
     marginTop:10,
+    paddingBottom:20,
     borderBottomWidth: 1,
   },
   wellcomeText: {
     textAlign: 'left',
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 50,
+    fontSize: 40,
   },
 });

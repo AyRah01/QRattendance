@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import HeaderSmall from './HeaderSmall';
 import {colors} from './../config'
+import useStorage from '../helper/useStorage';
 export default function AddStudent({ navigation }) {
   const [studentId, setStudentId] = useState('');
   const [firstname, setfirstname] = useState('');
@@ -18,15 +19,18 @@ export default function AddStudent({ navigation }) {
   
   const [gender, setGender] = useState("Male")
 
+  const {getValueFor} = useStorage()
   const courses = ["BSIT", "COE", "SOA", "CBM"]
   const sections = ["A","B","C","D","E","F","G"]
   const years = ['1','2','3','4']
 
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+  }, []);
 
 
   const submit = async () => {
+    const teacherId = await getValueFor('user_id')
     const addStudentReq = await axios.post(API_BASE + '/addStudent', {
       firstname,
       middlename,
@@ -35,7 +39,8 @@ export default function AddStudent({ navigation }) {
       studentId,
       course,
       year,
-      section
+      section,
+      teacherId:teacherId
     });
     const studentData = addStudentReq.data;
     console.log(studentData);

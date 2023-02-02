@@ -12,10 +12,15 @@ import {colors} from './../config'
 import Header from './Header';
 import Footer from './Footer';
 import HeaderSmall from './HeaderSmall';
-
+import useStorage from '../helper/useStorage';
+import { Picker } from '@react-native-picker/picker';
 export default function Students({ navigation }) {
   const [students, setStudents] = useState([]);
+  const [toSearch, setToSearch] = useState('');
+  const [courseFilter, setCourseFilter] = useState('BSIT')
+  const [yearSectionFilter, setYearSectionFilter] = useState('1-A')
 
+  const {getValueFor} = useStorage()
   useEffect(()=>{
     navigation.setOptions({
       headerTitle:"Students",
@@ -27,16 +32,42 @@ export default function Students({ navigation }) {
   useFocusEffect(
 
     useCallback(()=>{
-        const reqClasses = async () => {
-          const classsReq = await axios.post(API_BASE + '/getAllStudents');
-    
-          const studentsData = classsReq.data;
-          setStudents(studentsData);
-    }
     reqClasses();
 
   },[navigation]))
 
+  useEffect(() => {
+    if (toSearch.length > 3) search();
+    else reqClasses();
+  }, [toSearch]);
+
+  useEffect(()=>{
+    filterReq()
+  },[courseFilter, yearSectionFilter])
+  const reqClasses = async () => {
+    const teacherId = await getValueFor('user_id')
+    const classsReq = await axios.post(API_BASE + '/getAllStudents',{teacherId:teacherId});
+
+    const studentsData = classsReq.data;
+    setStudents(studentsData);
+}
+  const filterReq = async()=>{
+    const teacherId = await getValueFor('user_id');
+
+    const request = await axios.get(API_BASE+'/filterStudents/'+courseFilter+"/"+yearSectionFilter+"/"+teacherId)
+    const studentsData = request.data
+    setStudents(studentsData)
+  }
+  const search = async () => {
+    const teacherId = await getValueFor('user_id');
+
+    const searchReq = await axios.get(API_BASE + '/searchStudent/' + toSearch + '/' + teacherId);
+
+    if (searchReq.status === 200) {
+      const searchData = searchReq.data;
+      setStudents(searchData);
+    }
+  };
   const Item = ({ data, target }) => {
     const fullname = data.firstname + ' ' + data.middlename + ' ' + data.lastname;
     const yearSection = data.course + " "+data.year+" "+data.section
@@ -50,7 +81,59 @@ export default function Students({ navigation }) {
 
   return (
     <SafeAreaView style={styles.mainWrapper}>
-      <HeaderSmall title={"Students"} navigation = {navigation}/>
+      <Header title={"Students"} navigation = {navigation}/>
+      <View style={styles.titleBox}>
+      <View style = {styles.filterWrapper}>
+        <View style={styles.filterBox}>
+          <Picker
+            style={{ flex: 1,color:'white' }}
+            selectedValue={courseFilter}
+            onValueChange={(itemValue, itemIndex) => setCourseFilter(itemValue)}
+          >
+            <Picker.Item label="BSIT" value="BSIT" />
+            <Picker.Item label="COE" value="COE" />
+            <Picker.Item label="CBM" value="CBM" />
+            <Picker.Item label="SOA" value="SOA" />
+          </Picker>
+        </View>
+        <View style={styles.filterBox}>
+          <Picker
+            style={{ flex: 1,color:'white' }}
+            selectedValue={yearSectionFilter}
+            onValueChange={(itemValue, itemIndex) => setYearSectionFilter(itemValue)}
+          >
+            <Picker.Item label="1-A" value="1-A" />
+            <Picker.Item label="1-B" value="1-B" />
+            <Picker.Item label="1-C" value="1-C" />
+            <Picker.Item label="1-D" value="1-D" />
+            <Picker.Item label="1-E" value="1-E" />
+
+            <Picker.Item label="2-A" value="2-A" />
+            <Picker.Item label="2-B" value="2-B" />
+            <Picker.Item label="2-C" value="2-C" />
+            <Picker.Item label="2-D" value="2-D" />
+            <Picker.Item label="2-E" value="2-E" />
+
+            <Picker.Item label="3-A" value="3-A" />
+            <Picker.Item label="3-B" value="3-B" />
+            <Picker.Item label="3-C" value="3-C" />
+            <Picker.Item label="3-D" value="3-D" />
+            <Picker.Item label="3-E" value="3-E" />
+
+            <Picker.Item label="4-A" value="4-A" />
+            <Picker.Item label="4-B" value="4-B" />
+            <Picker.Item label="4-C" value="4-C" />
+            <Picker.Item label="4-D" value="4-D" />
+            <Picker.Item label="4-E" value="4-E" />
+
+          </Picker>
+        </View>
+        </View>
+        <View style={styles.searchBox}>
+          <Text style={styles.searchLabel}>Search:</Text>
+          <TextInput style={styles.input} defaultValue={toSearch} onChangeText={(e) => setToSearch(e)} />
+        </View>
+        </View>
       <View style={styles.body}>
         <View style={styles.itemsWrapper}>
           <ScrollView>
@@ -96,7 +179,7 @@ const styles = StyleSheet.create({
   },
   titleBox: {
     width: '100%',
-    height: 120,
+    height: 'auto',
     flex: 0,
     backgroundColor: colors.primary,
     borderColor: colors.warning,
@@ -173,5 +256,48 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 10,
+  },
+  filterBox:{
+    width: '45%',
+    height: 40,
+    borderRadius: 3,
+    flex: 0,
+    backgroundColor: colors.secondary,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    margin: 5,
+    padding: 10,
+
+  },
+  filterWrapper:{
+    flex:0,
+    flexDirection:'row',
+    marginTop:10
+  },
+  searchBox: {
+    marginTop: 10,
+    width: '95%',
+    height: 'auto',
+    flex: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.secondary,
+    padding: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 50,
+  },
+  searchLabel:{
+    color:'white'
+  },
+  input: {
+    borderBottomWidth: 1,
+    flex: 1,
+    borderColor: 'white',
+    color: 'white',
+    paddingLeft: 5,
+    paddingRight: 5,
   },
 });
