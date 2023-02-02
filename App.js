@@ -2,7 +2,7 @@ import react from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaView, StyleSheet, ScrollView, StatusBar, Text, View, Button } from 'react-native';
-
+import { colors } from './config';
 import Home from './screen/Home';
 import Menu from './screen/menu';
 import Attendance from './screen/Attendance';
@@ -27,39 +27,38 @@ import SelectClass from './screen/SelectClass';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
-
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName={'authenticator'
-        
-      }
-      >
-        <Stack.Screen name="authenticator" component={Authenticator} options={{headerShown:false}} />
-        <Stack.Screen name="home" component={Home} options={{title:"Attendance Monitoring"}} />
-        <Stack.Screen name="addClass"  component={AddClass} options={{title:"Add Class"}}/>
-
-        <Stack.Screen name="menu" component={Menu} options={{title:"Menu"}} />
-        <Stack.Screen name="attendance" component={Attendance} />
-        <Stack.Screen name='attendance-details' component={AttendanceDetails} options={{title:"Attendace Record"}}/>
-        <Stack.Screen name='students' component={Students}/>
-        <Stack.Screen name='enroll-student' component={Enroll}/>
-        <Stack.Screen name="classes" component={Classes} options={{title:"Classes"}}  />
-        <Stack.Screen name="reports" component={Report} options={{title:"Attendace Reports"}}/>
-        <Stack.Screen name="select-class" component={SelectClass} options={{title:"Select Class"}}/>
-        <Stack.Screen name="view-reports" component={ReportDetails} options={{title:"Report Details"}}/>
-        <Stack.Screen name="login" component={Login} options={{headerShown:false}} />
-        <Stack.Screen name='register' component={Register} options={{headerShown:false}}/>
-        <Stack.Screen name="view-class" component={ClassView} options={{headerShown:true}} />
-        <Stack.Screen name="add-student" component={AddStudent} options={{title:"Add Student"}} />
-        <Stack.Screen name = "view-qrcode" component={QRGenerator}/>
-        <Stack.Screen name="save-qr" component={SaveQr} options={{title:"Save QR Code"}}/>
-        <Stack.Screen name = "check-attendance" component={ScanAttendance}/>
-        <Stack.Screen name = "view-attendance" component={AttendanceReport} options={{title:"Attendance"}}/>
-        <Stack.Screen name='student-details' component={StudentInformation} options={{title:"Student Information"}}/>
-
-
-
+      <Stack.Navigator initialRouteName={'authenticator'} screenOptions={{headerShown:false}}>
+        <Stack.Screen name="authenticator" component={Authenticator} options={{ headerShown: false }} />
+        <Stack.Screen name="home" component={Home} options={{ headerShown: false }} />
+        <Stack.Screen name="addClass" component={AddClass} options={{ headerShown: false }} />
+        <Stack.Screen name="menu" component={Menu} options={{ title: 'Menu' }} />
+        <Stack.Screen name="attendance" component={Attendance} options={{ headerShown: false }} />
+        <Stack.Screen name="attendance-details" component={AttendanceDetails} options={{ headerShown:false}} />
+        <Stack.Screen name="students" component={Students} options={{ headerShown:false}} />
+        <Stack.Screen name="enroll-student" component={Enroll} />
+        <Stack.Screen name="classes" component={Classes} options={{ title: 'Classes' }} />
+        <Stack.Screen name="reports" component={Report} options={{ title: 'Attendace Reports' }} />
+        <Stack.Screen name="select-class" component={SelectClass} options={{ title: 'Select Class' }} />
+        <Stack.Screen name="view-reports" component={ReportDetails} options={{ title: 'Report Details' }} />
+        <Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="register" component={Register} options={{ headerShown: false }} />
+        <Stack.Screen name="view-class" component={ClassView} options={{ headerShown: false }} />
+        <Stack.Screen name="add-student" component={AddStudent} options={{ headerShown:false}} />
+        <Stack.Screen name="view-qrcode" component={QRGenerator} />
+        <Stack.Screen name="save-qr" component={SaveQr} options={{ title: 'Save QR Code' }} />
+        <Stack.Screen
+          name="check-attendance"
+          component={ScanAttendance}
+          options={{headerShown:false}}
+        />
+        <Stack.Screen name="view-attendance" component={AttendanceReport} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="student-details"
+          component={StudentInformation}
+          options={{ headerShown:false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

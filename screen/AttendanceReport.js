@@ -8,29 +8,36 @@ import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 
+import { headerStyle, colors } from './../config';
+import LogoWest from './../assets/westlogo.png';
+import { Ionicons } from '@expo/vector-icons';
+import Footer from './Footer';
+import Header from './Header';
+
 export default function AttendanceReport({ navigation, route }) {
   const [attendance, setAttendance] = useState([]);
-  const classData = route.params.classData
-  
+  const classData = route.params.classData;
 
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
 
-  useFocusEffect(useCallback(()=>{
-    const reqClasses = async () => {
-      const attendanceReq = await axios.post(API_BASE + '/getAttendance',{classId:classData.course_number});
+  useFocusEffect(
+    useCallback(() => {
+      const reqClasses = async () => {
+        const attendanceReq = await axios.post(API_BASE + '/getAttendance', { classId: classData.course_number });
 
-      const attendanceData = attendanceReq.data;
-      setAttendance(attendanceData)
-      console.log(attendanceData);
-    };
-    reqClasses();
-  },[]))
-
+        const attendanceData = attendanceReq.data;
+        setAttendance(attendanceData);
+        console.log(attendanceData);
+      };
+      reqClasses();
+    }, []),
+  );
   const Item = ({ data, target }) => {
     return (
-      <View style={styles.item} onTouchEnd={() => navigation.navigate('attendance-details', { classData:classData,attendanceData:data })}>
+      <View
+        style={styles.item}
+        onTouchEnd={() => navigation.navigate('attendance-details', { classData: classData, attendanceData: data })}
+      >
         <Text style={styles.itemTitle}>{data.date}</Text>
         <Text style={styles.itemTitle}>Present: {data.present}</Text>
       </View>
@@ -38,54 +45,72 @@ export default function AttendanceReport({ navigation, route }) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <SafeAreaView style={styles.mainWrapper}>
-        <ScrollView>
-          <View style={styles.body}>
-            <View style={styles.tittleWrapper}>
-            <Text style={styles.title}>{classData.course_number}</Text>
-              <Text style={styles.title}>{classData.course_title}</Text>
-              <Text style={styles.subtitle}>{classData.semester} Semester</Text>
-            </View>
-            <View style={styles.itemsWrapper}>
-              {attendance.map((data, idx) => (
-                <Item data={data} key={idx} />
-              ))}
-            </View>
-            <View style={styles.footer}>
-              <CustomBtn title="Check Attendace" action={()=>navigation.navigate("check-attendance",classData)}/>
-            </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+    <SafeAreaView style={styles.mainWrapper}>
+      <Header title={"Attendance"} navigation = {navigation}/>
+      <View style={styles.body}>
+        <View style={styles.titleBox}>
+          <Text style={styles.courseTitle}>{classData.course_number}</Text>
+          <Text style={styles.title}>{classData.course_title}</Text>
+          <Text style={styles.subtitle}>{classData.semester} Semester</Text>
+        </View>
+        <View style={styles.itemsWrapper}>
+          <ScrollView>
+            {attendance.map((data, idx) => (
+              <Item data={data} key={idx} />
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+      <Footer active={'attendance'} actionIcon = "scan-circle-outline" actionTitle="Scan"navigation = {navigation} action = {()=>navigation.navigate('check-attendance',classData)}/>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   mainWrapper: {
-    flex: 0,
+    flex: 1,
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor:'white'
   },
   body: {
     flex: 1,
     justifyContent: 'flex-start',
+    flexDirection: 'column',
     alignItems: 'center',
     width: '100%',
     height: '100%',
   },
-  title: {
-    fontSize: 20,
-    fontWeight:'bold'
-  },
-  subtitle:{
-    fontSize: 20,
-  },
-  tittleWrapper: {
+  titleBox: {
     width: '100%',
-    height: 100,
+    height: 120,
     flex: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderColor: colors.warning,
+    justifyContent: 'flex-start',
+    paddingLeft: 20,
+    paddingBottom: 10,
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    borderBottomWidth: 10,
+  },
+  courseTitle: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: 'white',
+    margin: 0,
+    padding: 0,
+  },
+  title: {
+    textAlign: 'left',
+    color: 'white',
+    fontSize: 20,
+    marginTop: 'auto',
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: 10,
+    color: 'white',
   },
 
   header: {
@@ -104,29 +129,38 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemsWrapper: {
-    flex: 0,
+    flex: 1,
+    paddingTop: 0,
+    padding: 10,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    flexDirection: 'column',
     width: '100%',
-    height: "auto",
   },
   item: {
-    width: '95%',
-    height: 'auto',
-    borderRadius: 10,
+    width: '84%',
+    height: 60,
     flex: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    margin: 5,
-    padding: 10,
-    borderBottomWidth: 1,
+    backgroundColor: colors.secondary,
+    borderRadius: 20,
+    marginBottom: 20,
+    padding: 20,
+    borderWidth: 0,
+    borderRadius: 5,
+    borderColor: colors.warning,
   },
   itemTitle: {
-    fontWeight: 'bold',
+    fontSize: 15,
+    margin: 0,
+    padding: 0,
+    color: 'white',
   },
-  footer: {
-    height: 'auto',
-    width: '90%',
+  itemIcon: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
   },
-});
+  });

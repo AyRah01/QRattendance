@@ -11,71 +11,90 @@ import * as MediaLibrary from 'expo-media-library';
 import QRCode from 'react-native-qrcode-svg';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-
+import HeaderSmall from './HeaderSmall';
+import { colors } from './../config';
 export default function StudentInformation({ route, navigation }) {
-  const { data,type, classData } = route.params;
+  const { data, type, classData } = route.params;
   const [qrRef, setQrRef] = useState(null);
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <>
-          {/* <Ionicons name="create-outline" size={25} color="black" onPress={editClass} /> */}
-          {type === "class"?(<Button title='Unenroll' color={"#c1012f"} onPress={unEnroll}/>):(<Ionicons name="trash-outline" size={25} color="orange" onPress={delStudent} />
-)}
-
-        </>
-      ),
+      headerRight: () => <>{/* <Ionicons name="create-outline" size={25} color="black" onPress={editClass} /> */}</>,
     });
   }, []);
   const saveQrCode = async () => {
-    navigation.navigate("save-qr",{data})
+    navigation.navigate('save-qr', { data });
   };
 
-
-
   const delStudent = () => {
-    Alert.alert("Delete?","Are you sure to delete this student?",[
-      {text:"No",onPress:()=>{return 0}},
-      {text:"Yes",onPress: confirmDelete}
-    ])
-  }
+    Alert.alert('Delete?', 'Are you sure to delete this student?', [
+      {
+        text: 'No',
+        onPress: () => {
+          return 0;
+        },
+      },
+      { text: 'Yes', onPress: confirmDelete },
+    ]);
+  };
+
+  const confirmDelete = async () => {
+    const deleteREq = await axios.post(API_BASE + '/deleteStudent', { studentId: data.student_id });
+    if (deleteREq.data.success) navigation.goBack();
+    else Alert.alert('Failed to Delete', 'An error occured while deleting student data');
+  };
+
   const unEnroll = () => {
-    Alert.alert("Unenroll?","Are you sure to unenroll this student from class "+classData.course_title+"?",[
-      {text:"No",onPress:()=>{return 0}},
-      {text:"Yes",onPress: confirmUnenroll}
-    ])
-  }
-  const confirmDelete = async()=> {
-    const deleteREq = await axios.post(API_BASE+"/deleteStudent",{studentId:data.student_id})
-    if(deleteREq.data.success)navigation.goBack()
-    else Alert.alert("Failed to Delete","An error occured while deleting student data")
-  }
-  const confirmUnenroll = async()=> {
-    const deleteREq = await axios.post(API_BASE+"/unenroll",{studentId:data.student_id,classId:classData.course_number})
-    if(deleteREq.data.success)navigation.goBack()
-    else Alert.alert("Failed to Delete","An error occured while deleting student data")
-  }
+    Alert.alert('Unenroll?', 'Are you sure to unenroll this student from class ' + classData.course_title + '?', [
+      {
+        text: 'No',
+        onPress: () => {
+          return 0;
+        },
+      },
+      { text: 'Yes', onPress: confirmUnenroll },
+    ]);
+  };
+  const confirmUnenroll = async () => {
+    const deleteREq = await axios.post(API_BASE + '/unenroll', {
+      studentId: data.student_id,
+      classId: classData.course_number,
+    });
+    if (deleteREq.data.success) navigation.goBack();
+    else Alert.alert('Failed to Delete', 'An error occured while deleting student data');
+  };
   return (
     <View style={{ flex: 1, backgroundColor: 'black' }}>
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
+          <View style={styles.headerWrapper}>
+            <Ionicons name="arrow-back-outline" size={30} color={colors.warning} onPress={() => navigation.goBack()} />
+            <View style={styles.titleWrapper}>
+              <Text style={styles.title}>Student Information</Text>
+            </View>
+            {type === 'class' ? (
+              <Button title="Unenroll" color={'red'} onPress={unEnroll} />
+            ) : (
+              <Ionicons name="trash-outline" size={25} color={colors.warning} onPress={delStudent} />
+            )}
+          </View>
+
           <View style={styles.body}>
             <View style={styles.detailsWrapper}>
-              <StudentInfoBox label="ID Number:" value={data.student_id.toUpperCase()} />
-              <StudentInfoBox label="First Name:" value={data.firstname.toUpperCase()} />
-              <StudentInfoBox label="Middle Name:" value={data.middlename.toUpperCase()} />
-              <StudentInfoBox label="Last Name:" value={data.lastname.toUpperCase()} />
-              <StudentInfoBox label="Gender:" value={data.gender.toUpperCase()} />
-              <StudentInfoBox label="Course:" value={data.course} />
-              <StudentInfoBox label="Year:" value={data.year} />
-              <StudentInfoBox label="Section:" value={data.section} />
-              
+              <StudentInfoBox label="ID Number" value={data.student_id.toUpperCase()} />
+              <StudentInfoBox label="First Name" value={data.firstname.toUpperCase()} />
+              <StudentInfoBox label="Middle Name" value={data.middlename.toUpperCase()} />
+              <StudentInfoBox label="Last Name" value={data.lastname.toUpperCase()} />
+              <StudentInfoBox label="Gender" value={data.gender.toUpperCase()} />
+              <StudentInfoBox label="Course" value={data.course} />
+              <StudentInfoBox label="Year" value={data.year} />
+              <StudentInfoBox label="Section" value={data.section} />
+
               <View style={styles.qrContainer}>
-                <QRCode value={data.student_id} getRef={(c) => setQrRef(c)} size = {200}  backgroundColor='#ffffff'/>
+                <QRCode value={data.student_id} getRef={(c) => setQrRef(c)} size={200} backgroundColor="#ffffff" />
               </View>
               <View style={styles.btnWrapper}>
-                <CustomBtn title="Save QR Code" type={'primary'} action={saveQrCode}/>
+                <CustomBtn title="Save QR Code" type={'primary'} action={saveQrCode} />
               </View>
             </View>
           </View>
@@ -86,9 +105,13 @@ export default function StudentInformation({ route, navigation }) {
 }
 const StudentInfoBox = ({ label, value }) => {
   return (
-    <View style={styles.details}>
-      <Text style={styles.detailsTitle}>{label}</Text>
-      <Text style={styles.detailsTitle}>{value}</Text>
+    <View style={styles.detailsBox}>
+      <View style={styles.detailsLabelBox}>
+        <Text style={styles.detailsLabel}>{label}</Text>
+      </View>
+      <View style={styles.details}>
+        <Text style={styles.detailsTitle}>: {value}</Text>
+      </View>
     </View>
   );
 };
@@ -128,10 +151,10 @@ const styles = StyleSheet.create({
     flex: 0,
     justifyContent: 'space-between',
     alignItems: 'center',
-    flexDirection:"row",
+    flexDirection: 'row',
     backgroundColor: '#e8d5c5',
-    paddingLeft:10,
-    paddingRight:10
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   inputWrapper: {
     justifyContent: 'flex-start',
@@ -158,23 +181,36 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 'auto',
   },
-  details: {
+  detailsBox: {
     width: '95%',
     height: 'auto',
     borderRadius: 3,
     flex: 0,
-    backgroundColor: '#e8d5c5',
+    backgroundColor: colors.secondary,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
     margin: 5,
     padding: 10,
     borderBottomWidth: 1,
     borderColor: 'white',
   },
+  details:{
+    flex:0,
+    justifyContent:'flex-start',
+    alignItems:'flex-start',
+    width:"75%"
+  },
+  detailsLabelBox:{
+    width:'auto'
+  },
+  detailsLabel: {
+    fontWeight: 'bold',
+    color: 'white',
+  },
   detailsTitle: {
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
     marginRight: 10,
   },
   qrContainer: {
@@ -187,5 +223,36 @@ const styles = StyleSheet.create({
   btnWrapper: {
     width: 100,
     margin: 10,
+  },
+  headerWrapper: {
+    width: '100%',
+    height: 'auto',
+    flex: 0,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    backgroundColor: colors.primary,
+    padding: 10,
+    borderBottomColor: colors.warning,
+    borderBottomWidth: 10,
+    marginBottom: 10,
+  },
+  titleWrapper: {
+    flex: 0,
+    paddingLeft: 10,
+    justifyContent: 'flex-start',
+    marginRight: 'auto',
+    alignItems: 'flex-start',
+    backgroundColor: colors.primary,
+    paddingTop: 5,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.warning,
+  },
+  subTitle: {
+    fontSize: 15,
+    color: colors.warning,
   },
 });

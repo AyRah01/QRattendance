@@ -8,27 +8,22 @@ import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { colors } from './../config';
+import Header from './Header';
+import Footer from './Footer';
 export default function ClassView({ navigation, route }) {
   const [students, setStudents] = useState([]);
   const classData = route.params;
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: () => 
+      headerTitle: () => (
         <View style={styles.tittleWrapper}>
           <Text style={styles.title}>{classData.course_number.toUpperCase()}</Text>
-          <Text style={styles.subTitle}>
-            {classData.course_title}
-          </Text>
+          <Text style={styles.subTitle}>{classData.course_title}</Text>
         </View>
-      ,
-      headerRight: () => (
-        <>
-          <Ionicons name="create-outline" size={25} color="black" onPress={editClass} />
-          <Ionicons name="trash-outline" size={25} color="orange" onPress={delClass} />
-        </>
       ),
+      headerRight: () => <></>,
     });
   }, []);
   useFocusEffect(
@@ -65,7 +60,7 @@ export default function ClassView({ navigation, route }) {
   };
   const Item = ({ data, target }) => {
     const fullname = data.firstname + ' ' + data.middlename + ' ' + data.lastname;
-    const yearSection = data.course+" "+data.year+" "+data.section
+    const yearSection = data.course + ' ' + data.year + ' ' + data.section;
     return (
       <View
         style={styles.item}
@@ -78,117 +73,266 @@ export default function ClassView({ navigation, route }) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <SafeAreaView style={styles.mainWrapper}>
-      <ScrollView>
-
-        <View style={styles.body}>
-        <View style={styles.contentHeader}>
-              <Text style={styles.title}>Students</Text>
-            </View>
-          <View style={styles.itemsWrapper}>
-              {students?.length===0?(<Text>You have no students enrolled yet.</Text>):
-              students.map((data, idx) => (
-                <Item data={data} key={idx} />
-              ))}
-              
-          </View>
-          <View style={styles.footer}>
-            <CustomBtn
-              title="Enroll Student"
-              action={() => navigation.navigate('enroll-student', { classData })}
-            />
+    <SafeAreaView style={styles.mainWrapper}>
+      <Header title="Class" navigation={navigation} />
+      <View style={styles.titleBox}>
+        <View style={styles.HeaderUtilBox}>
+          <Text style={styles.courseTitle}>{classData.course_number}</Text>
+          <View style ={styles.headerButtons}>
+          <View style = {styles.headerButtonWrapper} onTouchEnd = {editClass}><Text style = {{color:'white', margin:3}}>Edit</Text><Ionicons name='create-outline' size={20} color='white'/></View>
+          <View style = {styles.headerButtonWrapper} onTouchEnd={delClass}><Text style = {{color:colors.warning, margin:3}}>Delete</Text><Ionicons name='trash-outline' size={20} color={colors.warning}/></View>
           </View>
         </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+        <Text style={styles.title}>{classData.course_title}</Text>
+        <Text style={styles.subtitle}>{classData.semester} Semester</Text>
+      </View>
+      <ScrollView>
+        <View style={styles.body}>
+          <View style={styles.itemsWrapper}>
+            {students?.length === 0 ? (
+              <Text>You have no students enrolled yet.</Text>
+            ) : (
+              students.map((data, idx) => <Item data={data} key={idx} />)
+            )}
+          </View>
+        </View>
+      </ScrollView>
+      <Footer action={() => navigation.navigate('enroll-student', { classData })} active = 'class' navigation={navigation} actionIcon = 'add-circle-outline' actionTitle='Enroll'/>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 1,
-    margin:0,
-    padding:0
+    backgroundColor: 'white',
   },
   body: {
-    margin:0,
-    padding:0,
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
     height: '100%',
+    backgroundColor: 'white',
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  subTitle: {
-    fontSize: 15,
+    fontSize: 30,
+    color: '#94dff5',
   },
   tittleWrapper: {
+    width: '100%',
+    height: 70,
     flex: 0,
-    height:"auto",
-    width:"90%",
-    paddingBottom:10,
-    paddingTop:10,
     justifyContent: 'center',
+    alignItems: 'center',
   },
 
   header: {
-    fontSize: 10,
+    fontSize: 15,
     color: 'black',
     fontWeight: 'bold',
-    width: 200,
   },
-  contentHeader: {
-    marginTop:0,
+  headerWrapper: {
     width: '100%',
+    height: 50,
     flex: 0,
-    paddingLeft:20,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-
-  },
-  headerBtn: {
-    flex: 0,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
+    backgroundColor: '#e8d5c5',
+    paddingLeft: 10,
+    paddingRight: 10,
   },
-  btn: {
-    marginRight: 2,
+  titleBox: {
+    width: '100%',
+    height: 120,
+    flex: 0,
+    backgroundColor: colors.primary,
+    borderColor: colors.warning,
+    justifyContent: 'flex-start',
+    paddingLeft: 20,
+    paddingBottom: 10,
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    borderBottomWidth: 10,
   },
-  scrollList: {
+  HeaderUtilBox: {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems:'center',
+    width:'100%'
+  },
+  headerButtons:{
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems:'center',
+    padding:10,
+  },
+  headerButtonWrapper:{
+    flex:0,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between',
+    width:'auto',
+    backgroundColor:colors.secondary,
+    padding:5,
+    paddingLeft:10,
+    paddingRight:10,
+    borderRadius:20,
+    marginLeft:5
+  },
+  courseTitle: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: 'white',
+    margin: 0,
+    padding: 0,
+  },
+  title: {
+    textAlign: 'left',
+    color: 'white',
+    fontSize: 20,
+    marginTop: 'auto',
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: 10,
+    color: 'white',
+  },
+
+  inputWrapper: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+    height: 50,
+    marginBottom: 0,
+  },
+  input: {
+    borderBottomWidth: 1,
     flex: 1,
+    width: '70%',
+    borderRadius: 10,
+    borderColor: '#e8d5c5',
+    color: '#e8d5c5',
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingTop: 25,
   },
-  itemsWrapper: {
+  detailsWrapper: {
     flex: 0,
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
     height: 'auto',
   },
-  item: {
-    width: '95%',
+  detailsBox: {
+    width: '100%',
     height: 'auto',
-    borderRadius: 10,
+    borderRadius: 3,
     flex: 0,
+    backgroundColor: colors.secondary,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     margin: 5,
     padding: 10,
     borderBottomWidth: 1,
+    borderColor: 'white',
+  },
+  details: {
+    flex: 0,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: '100%',
+  },
+  detailsLabelBox: {
+    width: 'auto',
+  },
+  detailsLabel: {
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  detailsTitle: {
+    fontWeight: 'bold',
+    color: 'white',
+    marginRight: 10,
+  },
+  qrContainer: {
+    width: 'auto',
+    height: 'auto',
+    padding: 10,
+    borderColor: 'white',
+    marginTop: 50,
+  },
+  btnWrapper: {
+    width: 100,
+    margin: 10,
+  },
+  headerWrapper: {
+    width: '100%',
+    height: 'auto',
+    flex: 0,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    backgroundColor: colors.primary,
+    padding: 10,
+    borderBottomColor: colors.warning,
+    borderBottomWidth: 10,
+    marginBottom: 10,
+  },
+  titleWrapper: {
+    flex: 0,
+    paddingLeft: 10,
+    justifyContent: 'flex-start',
+    marginRight: 'auto',
+    alignItems: 'flex-start',
+    backgroundColor: colors.primary,
+    paddingTop: 5,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.warning,
+  },
+  subTitle: {
+    fontSize: 15,
+    color: colors.warning,
+  },
+  itemsWrapper: {
+    flex: 1,
+    padding:10,
+    paddingTop: 0,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'column',
+    width: '100%',
+  },
+  item: {
+    width: '100%',
+    height:40,
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderRadius: 20,
+    borderWidth: 0,
+    borderRadius: 5,
+    borderColor: colors.warning,
+    borderBottomWidth:1,
+    padding:10
   },
   itemTitle: {
-    fontWeight: 'bold',
+    fontSize: 15,
+    margin: 0,
+    padding: 0,
+    width:'auto'
   },
-  footer: {
-    width: "90%",
-    height: 'auto',
-    margin:10
+  itemIcon: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
   },
 });

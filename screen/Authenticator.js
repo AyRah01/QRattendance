@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
 import useStorage from '../helper/useStorage';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import {colors} from './../config'
 
 export default function Classgen({navigation, account}) {
   const {getValueFor,save} = useStorage()
@@ -24,30 +23,29 @@ export default function Classgen({navigation, account}) {
 
 
     return (
-      <View style={{ flex: 1}}>
         <SafeAreaView style={styles.mainWrapper}>
           <View style={styles.body}>
           <Image
-            style={{ width: 300, height: 200, marginTop: 100 }}
-            source={require('./../assets/logo1.png')}
+            style={{ width: 300, height: 300 }}
+            source={require('./../assets/logo.png')}
           />
-          <Text style = {styles.title}>Mobile Based Class Attendance Monitoring System Via QR Code</Text>
           </View>
         </SafeAreaView>
-      </View>
     );
   }
   
   const styles = StyleSheet.create({
     mainWrapper: {
-      flex: 0,
+      flex: 1,
+      
     },
     body: {
       flex: 1,
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
       height: '100%',
+      backgroundColor:colors.primary
     },
     title: {
       fontSize: 20,

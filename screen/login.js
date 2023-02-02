@@ -1,16 +1,19 @@
-import { Alert, Button, Image, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
+import { Alert, Button, Image, StyleSheet, Text, TextInput, useColorScheme, View, CheckBox } from 'react-native';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import {colors} from './../config'
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false)
 
   const {save} = useStorage()
 
@@ -56,18 +59,23 @@ export default function Login({ navigation }) {
           <View style={styles.inputWrapper}>
             <TextInput
               style={styles.input}
-              secureTextEntry={true}
+              secureTextEntry={!showPassword}
               defaultValue={password}
               onChangeText={(e) => setPassword(e)}
-              placeholder={'Password:'}
+              placeholder={'Password:'
+            }
             />
           </View>
+          <View style={styles.inputWrapper}>
+          <BouncyCheckbox style={styles.checkBox} onPress={()=>setShowPassword(!showPassword)} text="Show Password" isChecked = {showPassword} size = {20}/>
+
+          </View>
           <View style={styles.btnWrapper}>
-            <CustomBtn width={100} height={20} title="Login" action={submit} />
+            <Button width={100} color={colors.primary} title="Login" outlined={true} onPress = {submit} />
           </View>
         <View style = {styles.hr}></View>
           <View style={styles.btnWrapper}>
-              <Button width={100} color="black" title="Register" outlined={true} onPress = {()=>navigation.navigate("register")} />
+              <Button width={100} color="grey"  title="Register" outlined={true} onPress = {()=>navigation.navigate("register")} />
             </View>
             <View style={styles.signup} >
             <Text style={styles.text}>Don't have an account?</Text>
@@ -81,7 +89,7 @@ export default function Login({ navigation }) {
 
 const styles = StyleSheet.create({
   mainWrapper: {
-    flex: 0,
+    flex: 1,
   },
   body: {
     flex: 1,
@@ -97,9 +105,16 @@ const styles = StyleSheet.create({
   inputWrapper: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    width: '100%',
+    flexDirection:'row',
+    width: '80%',
     height: 40,
     marginBottom: 0,
+  },
+  checkBox:{
+    margin:10
+  },
+  checkBoxText:{
+    marginLeft:4,
   },
   input: {
     borderTopWidth: 0,
@@ -137,6 +152,6 @@ const styles = StyleSheet.create({
     height:1,
     // borderTopWidth:1,
     borderColor:"#e8d5c5",
-    backgroundColor:"#e8d5c5"
+    backgroundColor:colors.warning
   }
 });

@@ -8,6 +8,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import HeaderSmall from './HeaderSmall';
+import Footer from './Footer';
+import {colors} from './../config'
+import Header from './Header';
 
 export default function Classes({ navigation }) {
   const {getValueFor} = useStorage()
@@ -45,8 +49,11 @@ export default function Classes({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1}}>
       <SafeAreaView style={styles.mainWrapper}>
+        <Header title="Classes" navigation = {navigation} subTitle = "List of Classes"/>
+        <View style={styles.titleBox}>
+          <Text style={styles.title}>Your Classes </Text>
+        </View>
         <ScrollView>
           <View style={styles.body}>
             <View style={styles.itemsWrapper}>
@@ -57,14 +64,15 @@ export default function Classes({ navigation }) {
             </View>
           </View>
         </ScrollView>
+        <Footer navigation={navigation} active="class" actionIcon = "add-circle-outline" actionTitle = "Add Class" action={()=>navigation.navigate('addClass',{type: "add", data:null})}/>
       </SafeAreaView>
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
   mainWrapper: {
-    flex: 0,
+    flex: 1,
+    backgroundColor:'white'
   },
   body: {
     flex: 1,
@@ -93,27 +101,59 @@ const styles = StyleSheet.create({
   scrollList: {
     flex: 1,
   },
-  itemsWrapper: {
+  titleBox: {
+    width: '100%',
+    height: 60,
     flex: 0,
+    backgroundColor:colors.primary,
+    borderColor: colors.warning,
+    justifyContent: 'flex-start',
+    paddingLeft: 20,
+    paddingBottom:10,
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    borderBottomWidth: 10,
+  },
+  title: {
+    textAlign: 'left',
+    color: 'white',
+    fontSize: 20,
+    marginTop:'auto'
+  },
+  itemsWrapper: {
+    flex: 1,
+    paddingTop: 0,
+    padding: 10,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    flexDirection: 'column',
     width: '100%',
-    height: "auto",
   },
   item: {
-    width: '95%',
-    height: 'auto',
-    borderRadius: 10,
+    width: '100%',
+    height: 60,
     flex: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    margin: 5,
-    padding: 10,
-    borderBottomWidth: 1,
+    backgroundColor: colors.secondary,
+    borderRadius: 20,
+    marginBottom: 20,
+    padding: 20,
+    borderWidth: 0,
+    borderRadius: 5,
+    borderColor: colors.warning,
   },
   itemTitle: {
-    fontWeight: 'bold',
+    fontSize: 15,
+    margin: 0,
+    padding: 0,
+    color: 'white',
+  },
+  itemIcon: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
   },
   footer: {
     height: 'auto',

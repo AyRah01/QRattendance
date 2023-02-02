@@ -5,6 +5,8 @@ import { API_BASE } from '../config';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
+import HeaderSmall from './HeaderSmall';
+import {colors} from './../config'
 export default function AddStudent({ navigation }) {
   const [studentId, setStudentId] = useState('');
   const [firstname, setfirstname] = useState('');
@@ -46,7 +48,8 @@ export default function AddStudent({ navigation }) {
     return navigation.navigate('student-details', { data });
   };
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={styles.mainWrapper}>
+      <HeaderSmall title="Add Student" navigation={navigation}/>
         <ScrollView>
           <View style={styles.body}>
             <View style={styles.details}>
@@ -119,12 +122,12 @@ export default function AddStudent({ navigation }) {
             
             
               <View style={styles.btnWrapper}>
-                <Button onPress={submit} title="Save" />
+                <Button onPress={submit} title="Save" color={colors.primary} />
               </View>
             </View>
           </View>
         </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -189,7 +192,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 3,
     flex: 0,
-    backgroundColor: '#e8d5c5',
+    backgroundColor: "white",
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',

@@ -5,22 +5,14 @@ import axios from 'axios';
 import { API_BASE } from '../config';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
-
+import {colors} from './../config'
+import HeaderSmall from './HeaderSmall';
 export default function ScanAttendance({ route, navigation }) {
   const classData = route.params;
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState("");
 
   useEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => 
-        <View style={styles.tittleWrapper}>
-          <Text style={styles.title}>{classData.course_number.toUpperCase()}</Text>
-          <Text style={styles.subTitle}>
-            {classData.course_title}
-          </Text>
-        </View>
-    });
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === 'granted');
@@ -59,10 +51,11 @@ export default function ScanAttendance({ route, navigation }) {
   return (
     <View style={{ flex: 1}}>
       <SafeAreaView style={styles.mainWrapper}>
+        <HeaderSmall title={classData.course_title} subTitle = {classData.course_number} navigation = {navigation}/>
         <ScrollView>
           <View style={styles.body}>
             <View style={styles.header}>
-              <Text style={styles.title}>ATTENDANCE</Text>
+              <Text style={styles.contentTitle}>ATTENDANCE</Text>
               <Text style = {styles.headerTip}>Make sure the QR code is within the center of the frame.</Text>
             </View>
             <View style={styles.container}>
@@ -95,19 +88,29 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
+    color:colors.warning
+
   },
   subTitle: {
     fontSize: 15,
+    color:colors.warning
+
   },
   tittleWrapper: {
     flex: 0,
     height:"auto",
-    width:"90%",
+    width:"100%",
     paddingBottom:10,
     paddingTop:10,
+    borderBottomColor:colors.warning,
+    borderBottomWidth:10,
     justifyContent: 'center',
   },
-
+  contentTitle:{
+    fontSize: 29,
+    fontWeight: 'bold',
+    marginBottom:30
+  },
 
   header: {
     flex:0,
@@ -117,13 +120,7 @@ const styles = StyleSheet.create({
   headerTip:{
     textAlign:'center'
   },
-  headerWrapper: {
-    width: '100%',
-    height: 50,
-    flex: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
   scrollList: {
     flex: 1,
   },

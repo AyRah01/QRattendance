@@ -6,7 +6,8 @@ import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
 import { Picker } from '@react-native-picker/picker';
-
+import HeaderSmall from './HeaderSmall';
+import {colors} from './../config'
 export default function AddClass({ navigation, route }) {
   const {getValueFor} = useStorage()
   const {type, classData} = route.params
@@ -27,7 +28,8 @@ export default function AddClass({ navigation, route }) {
     navigation.navigate("classes")
   }
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={styles.mainWrapper}>
+      <HeaderSmall title={"Add Class"} navigation={navigation}/>
         <ScrollView>
           <View style={styles.body}>
             <View style={styles.detailsWrapper}>
@@ -58,18 +60,18 @@ export default function AddClass({ navigation, route }) {
               </View>
 
               <View style={styles.btnWrapper}>
-              <CustomBtn title="Add Class" type={"primary"} action = {submit}/>
+              <Button onPress={submit} title="Save" color={colors.primary} />
             </View>
             </View>
           </View>
         </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   mainWrapper: {
-    flex: 0,
+    flex: 1,
   },
   body: {
     flex: 1,
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 3,
     flex: 0,
-    backgroundColor: '#e8d5c5',
+    backgroundColor: "white",
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',

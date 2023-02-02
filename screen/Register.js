@@ -2,11 +2,13 @@ import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, useColor
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import {colors} from './../config'
 export default function Register({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +16,8 @@ export default function Register({ navigation }) {
   const [middlename, setMiddlename] = useState("")
   const [lastname, setLastname] = useState("")
   const [confirmpass, setConfirmpass] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+
 
   const submit = async () => {
     if(!(firstname && middlename && lastname && email && password && confirmpass))return Alert.alert("Form is incomplete", "Please fill out the form before submitting.")
@@ -27,12 +31,11 @@ export default function Register({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1}}>
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
         <View style={styles.body}>
           <Image
-            style={{ width: 200, height: 130, marginBottom: 0, marginTop: 60 }}
+            style={{ width: 300, height: 300, marginBottom: 0 }}
             source={require('./../assets/logo1.png')}
           />
           <View style={styles.inputWrapper}>
@@ -71,7 +74,7 @@ export default function Register({ navigation }) {
             <TextInput
               style={styles.input}
               defaultValue={password}
-              secureTextEntry={true}
+              secureTextEntry={!showPassword}
               onChangeText={(e) => setPassword(e)}
               placeholder={'Password:'}
             />
@@ -80,24 +83,27 @@ export default function Register({ navigation }) {
             <TextInput
               style={styles.input}
               defaultValue={confirmpass}
-              secureTextEntry={true}
+              secureTextEntry={!showPassword}
               onChangeText={(e) => setConfirmpass(e)}
               placeholder={'Confirm Password:'}
             />
           </View>
+          <View style={styles.inputWrapper}>
+          <BouncyCheckbox style={styles.checkBox} onPress={()=>setShowPassword(!showPassword)} text="Show Password" isChecked = {showPassword} size = {20}/>
+
+          </View>
           <View style={styles.btnWrapper}>
-            <CustomBtn width={100} height={20} title="Register" action={submit} />
+            <Button color={colors.primary} title = "Register"/>
           </View>
         </View>
         </ScrollView>
       </SafeAreaView>
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
   mainWrapper: {
-    flex: 0,
+    flex: 1,
   },
   body: {
     flex: 1,
@@ -114,8 +120,9 @@ const styles = StyleSheet.create({
   inputWrapper: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    width: '100%',
-    height: 50,
+    flexDirection:'row',
+    width: '80%',
+    height: 40,
     marginBottom: 0,
   },
   input: {
@@ -129,8 +136,8 @@ const styles = StyleSheet.create({
   },
   btnWrapper: {
     width: '70%',
-    height: 30,
-    marginTop: 30,
+    height: "auto",
+    marginTop: 20,
   },
   btn: {
     flex: 1,

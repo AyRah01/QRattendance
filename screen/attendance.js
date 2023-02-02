@@ -4,11 +4,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
-
+import { Ionicons } from '@expo/vector-icons';
+import LogoWest from './../assets/westlogo.png';
+import Sample from './../assets/sample.jpg'
+import {headerStyle, colors} from './../config'
+import Header from './Header';
 export default function Attendance({ navigation }) {
   const {getValueFor} = useStorage()
   const [classes, setClasses] = useState([])
@@ -39,13 +42,13 @@ export default function Attendance({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1}}>
       <SafeAreaView style={styles.mainWrapper}>
+      <Header title = {"Attendance"} navigation = {navigation}/>
+      <View style={styles.titleBox}>
+          <Text style={styles.title}>Choose a class </Text>
+        </View>
         <ScrollView>
           <View style={styles.body}>
-            <View style={styles.headerWrapper}>
-              <Text style={styles.header}>CHOOSE A CLASS</Text>
-            </View>
             <View style={styles.itemsWrapper}>
               {classes.map((data, idx) => (
                 <Item data={data} key={idx} />
@@ -54,7 +57,6 @@ export default function Attendance({ navigation }) {
           </View>
         </ScrollView>
       </SafeAreaView>
-    </View>
   );
 }
 
@@ -69,16 +71,24 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  title: {
-    fontSize: 30,
-    color: '#94dff5',
-  },
-  tittleWrapper: {
+  titleBox: {
     width: '100%',
-    height: 70,
+    height: 60,
     flex: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor:colors.primary,
+    borderColor: colors.warning,
+    justifyContent: 'flex-start',
+    paddingLeft: 20,
+    paddingBottom:10,
+    alignItems: 'flex-start',
+    marginBottom: 20,
+    borderBottomWidth: 10,
+  },
+  title: {
+    textAlign: 'left',
+    color: 'white',
+    fontSize: 20,
+    marginTop:'auto'
   },
 
   header: {
@@ -104,20 +114,31 @@ const styles = StyleSheet.create({
     height: "auto",
   },
   item: {
-    width: '95%',
-    height: 'auto',
-    borderRadius: 10,
+    width: '90%',
+    height: 60,
     flex: 0,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    margin: 5,
-    padding: 10,
-    borderBottomWidth: 1,
+    backgroundColor: colors.secondary,
+    borderRadius: 20,
+    marginBottom: 20,
+    padding: 20,
+    borderWidth: 0,
+    borderRadius: 5,
+    borderColor: colors.warning,
   },
   itemTitle: {
-    fontWeight: 'bold',
+    fontSize: 15,
+    margin: 0,
+    padding: 0,
+    color: 'white',
   },
+  itemIcon:{
+    width:40,
+    height:40,
+    marginRight:10
+  },  
   footer: {
     height: 'auto',
     width: '90%',
