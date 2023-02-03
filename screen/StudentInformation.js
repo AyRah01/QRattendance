@@ -64,7 +64,6 @@ export default function StudentInformation({ route, navigation }) {
     else Alert.alert('Failed to Delete', 'An error occured while deleting student data');
   };
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
           <View style={styles.headerWrapper}>
@@ -75,20 +74,24 @@ export default function StudentInformation({ route, navigation }) {
             {type === 'class' ? (
               <Button title="Unenroll" color={'red'} onPress={unEnroll} />
             ) : (
+              <React.Fragment>
+              <Ionicons name="create-outline" size={25} color={colors.warning} onPress={()=>navigation.navigate('add-student',{studentData:data})} />
               <Ionicons name="trash-outline" size={25} color={colors.warning} onPress={delStudent} />
+
+              </React.Fragment>
             )}
           </View>
 
           <View style={styles.body}>
             <View style={styles.detailsWrapper}>
-              <StudentInfoBox label="ID Number" value={data.student_id.toUpperCase()} />
-              <StudentInfoBox label="First Name" value={data.firstname.toUpperCase()} />
-              <StudentInfoBox label="Middle Name" value={data.middlename.toUpperCase()} />
-              <StudentInfoBox label="Last Name" value={data.lastname.toUpperCase()} />
-              <StudentInfoBox label="Gender" value={data.gender.toUpperCase()} />
-              <StudentInfoBox label="Course" value={data.course} />
-              <StudentInfoBox label="Year" value={data.year} />
-              <StudentInfoBox label="Section" value={data.section} />
+              <StudentInfoBox label="ID Number" value={data.student_id?.toUpperCase()} />
+              <StudentInfoBox label="First Name" value={data.firstname?.toUpperCase()} />
+              <StudentInfoBox label="Middle Name" value={data.middlename?.toUpperCase()} />
+              <StudentInfoBox label="Last Name" value={data.lastname?.toUpperCase()} />
+              <StudentInfoBox label="Gender" value={data.gender?.toUpperCase()} />
+              <StudentInfoBox label="Course" value={data?.course} />
+              <StudentInfoBox label="Year" value={data?.year} />
+              <StudentInfoBox label="Section" value={data?.section} />
 
               <View style={styles.qrContainer}>
                 <QRCode value={data.student_id} getRef={(c) => setQrRef(c)} size={200} backgroundColor="#ffffff" />
@@ -100,7 +103,6 @@ export default function StudentInformation({ route, navigation }) {
           </View>
         </ScrollView>
       </SafeAreaView>
-    </View>
   );
 }
 const StudentInfoBox = ({ label, value }) => {
@@ -118,7 +120,6 @@ const StudentInfoBox = ({ label, value }) => {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 0,
-    backgroundColor: 'white',
   },
   body: {
     flex: 1,
@@ -126,7 +127,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor: 'white',
   },
   title: {
     fontSize: 30,
@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: '#e8d5c5',
     paddingLeft: 10,
     paddingRight: 10,
   },
@@ -169,7 +168,7 @@ const styles = StyleSheet.create({
     width: '70%',
     borderRadius: 10,
     borderColor: '#e8d5c5',
-    color: '#e8d5c5',
+    color: colors.primary,
     paddingLeft: 5,
     paddingRight: 5,
     paddingTop: 25,
@@ -186,7 +185,7 @@ const styles = StyleSheet.create({
     height: 'auto',
     borderRadius: 3,
     flex: 0,
-    backgroundColor: colors.secondary,
+    backgroundColor: "white",
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -206,11 +205,9 @@ const styles = StyleSheet.create({
   },
   detailsLabel: {
     fontWeight: 'bold',
-    color: 'white',
   },
   detailsTitle: {
     fontWeight: 'bold',
-    color: 'white',
     marginRight: 10,
   },
   qrContainer: {

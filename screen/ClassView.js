@@ -12,9 +12,12 @@ import { colors } from './../config';
 import useStorage from '../helper/useStorage';
 import Header from './Header';
 import Footer from './Footer';
+import { Picker } from '@react-native-picker/picker';
 export default function ClassView({ navigation, route }) {
   const [students, setStudents] = useState([]);
   const classData = route.params;
+  const [classFilter, setClassFilter] = useState('All');
+  const [classes, setClasses] = useState([]);
 
   const {getValueFor} = useStorage()
   useEffect(() => {
@@ -27,20 +30,49 @@ export default function ClassView({ navigation, route }) {
       ),
       headerRight: () => <></>,
     });
+    reqClasses()
   }, []);
   useFocusEffect(
     useCallback(() => {
-      const reqStudents = async () => {
-        const teacherId = await getValueFor('user_id')
-        const classsReq = await axios.post(API_BASE + '/getStudents', { classId: classData.course_number,teacherId:teacherId });
-        const studentsData = classsReq.data;
-        setStudents(studentsData);
-        console.log(studentsData);
-      };
-      reqStudents();
+
+      reqClasses();
+      if(classFilter !== "All"){
+        filterStudents()
+      }else reqStudents()
+     
     }, [navigation]),
   );
 
+  useEffect(() => {
+    if(classFilter !== "All"){
+      filterStudents()
+    }else reqStudents()
+   
+  }, [classFilter]);
+  const reqStudents = async () => {
+    const teacherId = await getValueFor('user_id')
+    const classsReq = await axios.post(API_BASE + '/getStudents', { classId: classData.course_number,teacherId:teacherId });
+    const studentsData = classsReq.data;
+    setStudents(studentsData);
+    console.log(studentsData);
+  };
+
+  const filterStudents = async () => {
+    const teacherId = await getValueFor('user_id')
+    const yearSection = classFilter
+    const classsReq = await axios.post(API_BASE + '/getStudentsByYearSection', { classId: classData.course_number,teacherId:teacherId,yearSection:yearSection });
+    const studentsData = classsReq.data;
+    setStudents(studentsData);
+    console.log(studentsData);
+  };
+  const reqClasses = async () => {
+    const email = await getValueFor('user_id');
+    const classsReq = await axios.get(API_BASE + '/getClasses/' + email + '/' + classData.course_number);
+
+    const classesData = classsReq.data;
+    setClasses(classesData);
+    console.log(classesData);
+  };
   const delClass = () => {
     Alert.alert('Delete Class?', 'Are you sure to delete this class?', [
       {
@@ -88,7 +120,24 @@ export default function ClassView({ navigation, route }) {
         </View>
         <Text style={styles.title}>{classData.course_title}</Text>
         <Text style={styles.subtitle}>{classData.semester} Semester</Text>
+        <View style={styles.filterWrapper}>
+          <View style={styles.filterBox}>
+            <Picker
+              style={{ flex: 1, color: 'white' }}
+              selectedValue={classFilter}
+              onValueChange={(itemValue, itemIndex) => setClassFilter(itemValue)}
+            >
+              <Picker.Item value={"All"} label = {"All"} />
+              {classes.map(({yearsection},idx)=>(
+                <Picker.Item value={yearsection} label = {yearsection} key = {idx}/>
+              ))}
+            </Picker>
+          </View>
+        </View>
+        <Text style={styles.title}>Students</Text>
+
       </View>
+      
       <ScrollView>
         <View style={styles.body}>
           <View style={styles.itemsWrapper}>
@@ -148,7 +197,7 @@ const styles = StyleSheet.create({
   },
   titleBox: {
     width: '100%',
-    height: 120,
+    height: 'auto',
     flex: 0,
     backgroundColor: colors.primary,
     borderColor: colors.warning,
@@ -337,5 +386,22 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 10,
+  },
+  filterBox: {
+    height: 40,
+    borderRadius: 3,
+    flex: 1,
+    backgroundColor: colors.secondary,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    margin: 5,
+    padding: 10,
+  },
+  filterWrapper: {
+    flex: 0,
+    flexDirection: 'row',
+    marginTop: 10,
+    marginBottom:10
   },
 });

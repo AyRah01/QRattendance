@@ -23,8 +23,8 @@ export default function AttendanceReport({ navigation, route }) {
   useFocusEffect(
     useCallback(() => {
       const reqClasses = async () => {
+        axios.post(API_BASE+'/initializeAttendance',{classId: classData.course_number })
         const attendanceReq = await axios.post(API_BASE + '/getAttendance', { classId: classData.course_number });
-
         const attendanceData = attendanceReq.data;
         setAttendance(attendanceData);
         console.log(attendanceData);

@@ -44,8 +44,9 @@ export default function SaveQr({ route, navigation }) {
     }
     const image = await expoCameraroll.save(uri, 'jpg');
     if (image) {
-      Alert.alert('Image saved', 'Successfully saved image to your gallery.', [{ text: 'OK', onPress: () => {} }], {
+      Alert.alert('Image saved', 'Successfully saved image to your gallery.', [{ text: 'OK', onPress: () => {navigation.goBack()} }], {
         cancelable: false,
+        
       });
     }
   };
@@ -78,7 +79,7 @@ export default function SaveQr({ route, navigation }) {
                     ' ' +
                     data.middlename.substring(0, 1).toUpperCase()}
                 </Text>
-                <Text style={styles.info}>{data.gender.toUpperCase() || 'Undefined'}</Text>
+                <Text style={styles.info}>{data.gender?.toUpperCase() || 'Undefined'}</Text>
                 <Text style={styles.info}>{data.course + ' ' + data.year + ' ' + data.section} </Text>
               </View>
             </ViewShot>

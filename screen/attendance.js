@@ -61,12 +61,10 @@ export default function Attendance({ navigation }) {
 
 const styles = StyleSheet.create({
   mainWrapper: {
-    flex: 0,
+    flex: 1,
   },
   body: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
     width: '100%',
     height: '100%',
   },
@@ -106,14 +104,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemsWrapper: {
-    flex: 0,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    flex: 1,
+    padding:10,
     width: '100%',
     height: "auto",
   },
   item: {
-    width: '90%',
+    width: '100%',
     height: 60,
     flex: 0,
     flexDirection: 'row',

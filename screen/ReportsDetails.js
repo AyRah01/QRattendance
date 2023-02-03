@@ -29,7 +29,7 @@ export default function ReportDetails({ navigation, route }) {
   const classData = route.params.classData;
   const subjectData = route.params.subjectData;
 
-  const { generateReport } = useGenerateReport(classData, subjectData);
+  const { generateDailyReport, generateStudentReport } = useGenerateReport(classData, subjectData);
 
   useEffect(() => {
     navigation.setOptions({
@@ -53,14 +53,14 @@ export default function ReportDetails({ navigation, route }) {
     }, []),
   );
 
-  const Item = ({ data, target }) => {
+  const Item = ({ title, target, action }) => {
     return (
       <View style={styles.item}>
         <TouchableOpacity>
-          <Text style={styles.itemTitle}>Attendance of {data.date}</Text>
+          <Text style={styles.itemTitle}>{title}</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Ionicons name="print-outline" size={25} color={colors.primary} onPress={() => generateReport(data.date)} />
+          <Ionicons name="print-outline" size={25} color={colors.primary} onPress={action} />
         </TouchableOpacity>
       </View>
     );
@@ -78,9 +78,9 @@ export default function ReportDetails({ navigation, route }) {
         </View>
         <ScrollView>
           <View style={styles.itemsWrapper}>
-            {attendance.map((data, idx) => (
-              <Item data={data} key={idx} />
-            ))}
+              <Item title="Daily Attendance" action = {()=>generateDailyReport(attendance)}/>
+              <Item title="Student's Individual Report" action={generateStudentReport} />
+
           </View>
         </ScrollView>
       </View>

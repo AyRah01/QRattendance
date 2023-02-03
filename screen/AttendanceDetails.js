@@ -19,7 +19,7 @@ export default function AttendaceDetails({ navigation, route }) {
     const reqClasses = async () => {
       const classsReq = await axios.post(API_BASE + '/attendanceDetails',{date:attendanceData.date, classId:classData.course_number});
 
-      const studentsData = classsReq.data;
+      const studentsData = classsReq.data
       setStudents(studentsData);
       console.log(studentsData);
     };
@@ -55,7 +55,7 @@ export default function AttendaceDetails({ navigation, route }) {
         </ScrollView>
       </View>
     </View>
-    <Footer active={'attendance'} navigation = {navigation} action = {()=>navigation.navigate('check-attendance',classData)}/>
+    <Footer active={'attendance'} actionIcon = "scan-circle-outline" actionTitle="Scan" navigation = {navigation} action = {()=>navigation.navigate('check-attendance',classData)}/>
   </SafeAreaView>
   );
 }
@@ -63,15 +63,11 @@ export default function AttendaceDetails({ navigation, route }) {
 const styles = StyleSheet.create({
   mainWrapper: {
     flex: 1,
-    alignItems: 'center',
     width: '100%',
     backgroundColor:'white'
   },
   body: {
     flex: 1,
-    justifyContent: 'flex-start',
-    flexDirection: 'column',
-    alignItems: 'center',
     width: '100%',
     height: '100%',
   },
@@ -126,13 +122,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 0,
     padding: 10,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    flexDirection: 'column',
     width: '100%',
   },
   item: {
-    width: '88%',
+    width: '100%',
     height: 55,
     flex: 0,
     flexDirection: 'row',

@@ -47,7 +47,7 @@ const App = () => {
         <Stack.Screen name="view-class" component={ClassView} options={{ headerShown: false }} />
         <Stack.Screen name="add-student" component={AddStudent} options={{ headerShown:false}} />
         <Stack.Screen name="view-qrcode" component={QRGenerator} />
-        <Stack.Screen name="save-qr" component={SaveQr} options={{ title: 'Save QR Code' }} />
+        <Stack.Screen name="save-qr" component={SaveQr} options={{ title: 'Save QR Code' , headerShown:true}} />
         <Stack.Screen
           name="check-attendance"
           component={ScanAttendance}

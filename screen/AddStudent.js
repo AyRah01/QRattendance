@@ -1,137 +1,171 @@
 import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import HeaderSmall from './HeaderSmall';
-import {colors} from './../config'
+import { colors } from './../config';
 import useStorage from '../helper/useStorage';
-export default function AddStudent({ navigation }) {
-  const [studentId, setStudentId] = useState('');
-  const [firstname, setfirstname] = useState('');
-  const [middlename, setMiddlename] = useState('');
-  const [lastname, setLastname] = useState('');
-  const [course, setCourse] = useState('BSIT');
-  const [year, setYear] = useState('1');
-  const [section, setSection] = useState('A');
-  
-  const [gender, setGender] = useState("Male")
+export default function AddStudent({ navigation, route }) {
+  const studentData = route.params?.studentData
+  const [idPart1, setIdPart1] = useState(studentData?.student_id.substring(3,5))
+  const [idPart2, setIdPart2] = useState(studentData?.student_id.substring(6))
+  const [firstname, setfirstname] = useState(studentData?.firstname);
+  const [middlename, setMiddlename] = useState(studentData?.middlename);
+  const [lastname, setLastname] = useState(studentData?.lastname);
+  const [course, setCourse] = useState(studentData?.course);
+  const [year, setYear] = useState(`${studentData?.year}`);
+  const [section, setSection] = useState(studentData?.section);
+  const [toEditId, setToEditId] = useState(studentData?.id)
 
-  const {getValueFor} = useStorage()
-  const courses = ["BSIT", "COE", "SOA", "CBM"]
-  const sections = ["A","B","C","D","E","F","G"]
-  const years = ['1','2','3','4']
+  const [gender, setGender] = useState(studentData?.gender);
 
+  const { getValueFor } = useStorage();
+  const courses = ['BSIT', 'COE', 'SOA', 'CBM'];
+  const sections = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+  const years = ['1', '2', '3', '4'];
+
+  const idRef = useRef()
 
   useEffect(() => {
+    console.log("To edit",studentData)
   }, []);
 
+  const handleIdPart1 = (e) => {
+      setIdPart1(e)
+  }
+  const handleIdPart2 = (e) => {
+      setIdPart2(e)
+  }
 
   const submit = async () => {
-    const teacherId = await getValueFor('user_id')
-    const addStudentReq = await axios.post(API_BASE + '/addStudent', {
-      firstname,
-      middlename,
-      lastname,
-      gender,
-      studentId,
-      course,
-      year,
-      section,
-      teacherId:teacherId
-    });
-    const studentData = addStudentReq.data;
-    console.log(studentData);
-    if (!studentData.success) {
-      if (studentData.code === 'duplicate') return Alert.alert('Failed to add Student', 'Student ID already exists.');
-      else return Alert.alert('Failed to add Student', 'There was an error while saving data');
-    }
-    const data = { firstname, middlename, lastname,gender, student_id: studentId, course, year, section };
+    let route = API_BASE + '/addStudent'
+    if (studentData)route = API_BASE + '/editStudent'
 
-    return navigation.navigate('student-details', { data });
+    console.log("to update:",toEditId)
+
+    const teacherId = await getValueFor('user_id');
+    if (firstname && middlename && lastname && gender && idPart1 && idPart2 && course && year && section) {
+      const studentId = "CC-"+idPart1+"-"+idPart2
+      const addStudentReq = await axios.post(route, {
+        firstname,
+        middlename,
+        lastname,
+        gender,
+        studentId,
+        course,
+        year,
+        section,
+        toEditId:toEditId,
+        teacherId:teacherId
+      });
+      const studentData = addStudentReq.data;
+      console.log(studentData);
+      if (!studentData.success) {
+        if (studentData.code === 'duplicate') return Alert.alert('Failed to add Student', 'Student ID already exists.');
+        else return Alert.alert('Failed to add Student', 'There was an error while saving data');
+      }
+      const data = { firstname, middlename, lastname, gender, student_id: studentId, course, year, section, id:studentData.id };
+
+      setfirstname('');
+      setMiddlename('');
+      setLastname('');
+      setIdPart1('');
+      setIdPart2('')
+      return navigation.navigate('student-details', { data });
+    }
+    else return Alert.alert('Incomplete', 'All fields are required to be filled');
+
   };
   return (
     <SafeAreaView style={styles.mainWrapper}>
-      <HeaderSmall title="Add Student" navigation={navigation}/>
-        <ScrollView>
-          <View style={styles.body}>
-            <View style={styles.details}>
-                <Text style={styles.detailsTitle}>ID Number</Text>
-                <TextInput style={styles.input} defaultValue={studentId} onChangeText={(e) => setStudentId(e)} />
-              </View>
-            <View style={styles.detailsWrapper}>
-              <View style={styles.details}>
-                <Text style={styles.detailsTitle}>First Name</Text>
-                <TextInput style={styles.input} defaultValue={firstname} onChangeText={(e) => setfirstname(e)} />
-              </View>
-              <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Middle Name</Text>
-                <TextInput style={styles.input} defaultValue={middlename} onChangeText={(e) => setMiddlename(e)} />
-              </View>
-              <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Last Name</Text>
-                <TextInput style={styles.input} defaultValue={lastname} onChangeText={(e) => setLastname(e)} />
-              </View>
-              <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Gender</Text>
-                <Picker
-                style={{flex:1}}
-                  selectedValue={gender}
-                  onValueChange={(itemValue, itemIndex) => setGender(itemValue)}
-                >                  
-                    <Picker.Item label="Male"value="Male" />
-                    
-                    <Picker.Item label="Female"value="Female" />
-                </Picker>
-              </View>
-              
-
-              <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Course</Text>
-                <Picker
-                style={{flex:1, height:50}}
-                  selectedValue={course}
-                  onValueChange={(itemValue, itemIndex) => setCourse(itemValue)}
-                >                  
-                  {courses.map((value,idx)=>(
-                    <Picker.Item label={value} value={value} key = {idx} />
-                  ))}
-                </Picker>
-              </View>
-              <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Year</Text>
-                <Picker
-                style={{flex:1, height:50}}
-                  selectedValue={year}
-                  onValueChange={(itemValue, itemIndex) => setYear(itemValue)}
-                >                  
-                  {years.map((value,idx)=>(
-                    <Picker.Item label={value} value={value} key = {idx} />
-                  ))}
-                </Picker>
-              </View>
-              <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Section</Text>
-                <Picker
-                style={{flex:1, height:50}}
-                  selectedValue={section}
-                  onValueChange={(itemValue, itemIndex) => setSection(itemValue)}
-                >                  
-                  {sections.map((value,idx)=>(
-                    <Picker.Item label={value} value={value} key = {idx} />
-                  ))}
-                </Picker>
-              </View>
-            
-            
-              <View style={styles.btnWrapper}>
-                <Button onPress={submit} title="Save" color={colors.primary} />
-              </View>
+      <HeaderSmall title="Add Student" navigation={navigation} />
+      <ScrollView>
+        <View style={styles.body}>
+          <View style={styles.details}>
+            <Text style={styles.detailsTitle}>ID Number</Text>
+            <View style ={styles.idInputBox}>
+            <TextInput style={styles.inputId} editable={false} value = "CC" />
+            <Text style={styles.detailsTitle}>-</Text>
+            <TextInput style={styles.inputId} keyboardType = 'number-pad' maxLength = {2} defaultValue={idPart1} onChangeText={handleIdPart1} />
+            <Text style={styles.detailsTitle}>-</Text>
+            <TextInput style={styles.inputId} maxLength = {3} keyboardType = 'numeric' defaultValue={idPart2} onChangeText={handleIdPart2} />
             </View>
           </View>
-        </ScrollView>
+          <View style={styles.detailsWrapper}>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>First Name</Text>
+              <TextInput style={styles.input} defaultValue={firstname} onChangeText={(e) => setfirstname(e)} />
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Middle Name</Text>
+              <TextInput style={styles.input} defaultValue={middlename} onChangeText={(e) => setMiddlename(e)} />
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Last Name</Text>
+              <TextInput style={styles.input} defaultValue={lastname} onChangeText={(e) => setLastname(e)} />
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Gender</Text>
+              <Picker
+                style={{ flex: 1 }}
+                selectedValue={gender}
+                onValueChange={(itemValue, itemIndex) => setGender(itemValue)}
+              >
+                <Picker.Item label="Select Gender" value="" />
+                <Picker.Item label="Male" value="Male" />
+
+                <Picker.Item label="Female" value="Female" />
+              </Picker>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Course</Text>
+              <Picker
+                style={{ flex: 1, height: 50 }}
+                selectedValue={course}
+                onValueChange={(itemValue, itemIndex) => setCourse(itemValue)}
+              >
+                <Picker.Item label={"Select Course"} value={""} />
+
+                {courses.map((value, idx) => (
+                  <Picker.Item label={value} value={value} key={idx} />
+                ))}
+              </Picker>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Year</Text>
+              <Picker
+                style={{ flex: 1, height: 50 }}
+                selectedValue={year}
+                onValueChange={(itemValue, itemIndex) => setYear(itemValue)}
+              >
+                <Picker.Item label={"Select Year"} value={""} />
+                {years.map((value, idx) => (
+                  <Picker.Item label={value} value={value} key={idx} />
+                ))}
+              </Picker>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.detailsTitle}>Section</Text>
+              <Picker
+                style={{ flex: 1, height: 50 }}
+                selectedValue={section}
+                onValueChange={(itemValue, itemIndex) => setSection(itemValue)}
+              >
+                <Picker.Item label={"Select Section"} value={""}/>
+                {sections.map((value, idx) => (
+                  <Picker.Item label={value} value={value} key={idx} />
+                ))}
+              </Picker>
+            </View>
+            <View style={styles.btnWrapper}>
+              <Button onPress={submit} title="Save" color={colors.primary} />
+            </View>
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -179,11 +213,26 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   input: {
+    width:'auto',
     flex: 1,
     borderRadius: 10,
     borderColor: '#e8d5c5',
     paddingLeft: 5,
     paddingRight: 5,
+  },
+  inputId:{
+    borderRadius: 2,
+    paddingLeft: 5,
+    paddingRight: 5,
+    borderWidth:1,
+    borderColor:colors.primary
+  },
+  idInputBox:{
+    flex:0,
+    width:150,
+    justifyContent:'space-evenly',
+    alignItems:'center',
+    flexDirection:'row'
   },
   detailsWrapper: {
     flex: 0,
@@ -197,7 +246,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 3,
     flex: 0,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -218,8 +267,8 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   btnWrapper: {
-    width: "100%",
-    padding:10,
+    width: '100%',
+    padding: 10,
     margin: 10,
   },
 });

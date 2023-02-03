@@ -55,17 +55,8 @@ export default function SelectClass({ navigation, route }) {
     <SafeAreaView style={styles.mainWrapper}>
       <Header title="Reports" navigation={navigation} />
       <View style={styles.titleBox}>
-        <Text style={styles.title}>Choose a Subject </Text>
+        <Text style={styles.title}>Choose a Class </Text>
       </View>
-      {/* <ScrollView>
-          <View style={styles.body}>
-            <View style={styles.itemsWrapper}>
-              {classes.map((data, idx) => (
-                <Item data={data} key={idx} />
-              ))}
-            </View>
-          </View>
-        </ScrollView> */}
       <ScrollView>
         <View style={styles.body}>
           <View style={styles.itemsWrapper}>
