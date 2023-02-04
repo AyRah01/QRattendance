@@ -24,6 +24,7 @@ import Classes from './screen/Classes';
 import SaveQr from './screen/SaveQr';
 import ReportDetails from './screen/ReportsDetails';
 import SelectClass from './screen/SelectClass';
+import AboutUs from './screen/AboutUs';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
@@ -34,6 +35,8 @@ const App = () => {
         <Stack.Screen name="home" component={Home} options={{ headerShown: false }} />
         <Stack.Screen name="addClass" component={AddClass} options={{ headerShown: false }} />
         <Stack.Screen name="menu" component={Menu} options={{ title: 'Menu' }} />
+        <Stack.Screen name="aboutUs" component={AboutUs} />
+
         <Stack.Screen name="attendance" component={Attendance} options={{ headerShown: false }} />
         <Stack.Screen name="attendance-details" component={AttendanceDetails} options={{ headerShown:false}} />
         <Stack.Screen name="students" component={Students} options={{ headerShown:false}} />

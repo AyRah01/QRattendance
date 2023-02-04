@@ -16,12 +16,15 @@ export default function AddClass({ navigation, route }) {
   const [courseTitle, setCourseTitle] = useState(classData?.course_title);
   const [semester, setSemester] = useState(classData?.semester || "1");
   const [schoolYear, setSchoolYear] = useState(classData?.school_year);
+  const [saving, setSaving] = useState(false)
   useEffect(() => {}, []);
 
   const submit = async() => {
+    setSaving(true)
     const email = await getValueFor("user_id")
     const url = type==='edit'?API_BASE+"/editClass/"+classData.id:API_BASE+"/addClass"
     const submitReq = await axios.post(url,{courseNumber, courseTitle, semester, schoolYear, email})
+    setSaving(false)
     if(submitReq.status !== 200)return Alert.alert("Server Error", "Sorry, cannot reach the server at the moment. Please try again later.")
     if(!submitReq.data.success)return Alert.alert("Failed to Save", "Sorry, an error has occured while saving the data. Please try again later.")
 
@@ -30,7 +33,7 @@ export default function AddClass({ navigation, route }) {
   return (
     <SafeAreaView style={styles.mainWrapper}>
       <HeaderSmall title={"Add Class"} navigation={navigation}/>
-        <ScrollView>
+      <ScrollView keyboardShouldPersistTaps = 'always'>
           <View style={styles.body}>
             <View style={styles.detailsWrapper}>
               <View style={styles.details}>
@@ -58,9 +61,8 @@ export default function AddClass({ navigation, route }) {
                 <Text style={styles.detailsTitle}>School Year</Text>
                 <TextInput style={styles.input} defaultValue={schoolYear} onChangeText={(e)=>setSchoolYear(e)} />
               </View>
-
               <View style={styles.btnWrapper}>
-              <Button onPress={submit} title="Save" color={colors.primary} />
+              <Button onPress={submit} title={saving?"Saving...":"Save"} color={colors.primary} disabled = {saving} />
             </View>
             </View>
           </View>

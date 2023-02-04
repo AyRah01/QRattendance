@@ -36,7 +36,9 @@ export default function Students({ navigation }) {
   }, []);
   useFocusEffect(
     useCallback(() => {
-      reqClasses();
+      if(courseFilter || yearSectionFilter){
+        filterReq();
+      }
     }, [navigation]),
   );
 

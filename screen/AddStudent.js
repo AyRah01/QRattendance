@@ -21,6 +21,7 @@ export default function AddStudent({ navigation, route }) {
   const [toEditId, setToEditId] = useState(studentData?.id)
 
   const [gender, setGender] = useState(studentData?.gender);
+  const [saving, setSaving] = useState(false)
 
   const { getValueFor } = useStorage();
   const courses = ['BSIT', 'COE', 'SOA', 'CBM'];
@@ -44,10 +45,9 @@ export default function AddStudent({ navigation, route }) {
     let route = API_BASE + '/addStudent'
     if (studentData)route = API_BASE + '/editStudent'
 
-    console.log("to update:",toEditId)
-
     const teacherId = await getValueFor('user_id');
-    if (firstname && middlename && lastname && gender && idPart1 && idPart2 && course && year && section) {
+    if (firstname && middlename && lastname && gender && idPart1.length === 2 && idPart2.length === 3 && course && year && section) {
+      setSaving(true)
       const studentId = "CC-"+idPart1+"-"+idPart2
       const addStudentReq = await axios.post(route, {
         firstname,
@@ -63,6 +63,8 @@ export default function AddStudent({ navigation, route }) {
       });
       const studentData = addStudentReq.data;
       console.log(studentData);
+      setSaving(false)
+
       if (!studentData.success) {
         if (studentData.code === 'duplicate') return Alert.alert('Failed to add Student', 'Student ID already exists.');
         else return Alert.alert('Failed to add Student', 'There was an error while saving data');
@@ -77,12 +79,13 @@ export default function AddStudent({ navigation, route }) {
       return navigation.navigate('student-details', { data });
     }
     else return Alert.alert('Incomplete', 'All fields are required to be filled');
+    
 
   };
   return (
     <SafeAreaView style={styles.mainWrapper}>
       <HeaderSmall title="Add Student" navigation={navigation} />
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps = 'always'>
         <View style={styles.body}>
           <View style={styles.details}>
             <Text style={styles.detailsTitle}>ID Number</Text>
@@ -161,7 +164,7 @@ export default function AddStudent({ navigation, route }) {
               </Picker>
             </View>
             <View style={styles.btnWrapper}>
-              <Button onPress={submit} title="Save" color={colors.primary} />
+              <Button onPress={submit} title={saving?'Saving...':"Save"} color={colors.primary} disabled = {saving}/>
             </View>
           </View>
         </View>
