@@ -18,6 +18,7 @@ export default function StudentInformation({ route, navigation }) {
   const [qrRef, setQrRef] = useState(null);
 
   useEffect(() => {
+    console.log("data",data)
     navigation.setOptions({
       headerRight: () => <>{/* <Ionicons name="create-outline" size={25} color="black" onPress={editClass} /> */}</>,
     });
@@ -90,9 +91,9 @@ export default function StudentInformation({ route, navigation }) {
               <StudentInfoBox label="Last Name" value={data.lastname?.toUpperCase()} />
               <StudentInfoBox label="Gender" value={data.gender?.toUpperCase()} />
               <StudentInfoBox label="Course" value={data?.course} />
-              <StudentInfoBox label="Year" value={data?.year} />
-              <StudentInfoBox label="Section" value={data?.section} />
-
+              <StudentInfoBox label="Student Type" value={data?.type} />
+              {data?.type === "regular"?<StudentInfoBox label="Year" value={data?.year} />:""}
+              {data?.type === "regular"? <StudentInfoBox label="Section" value={data?.section} />:""}
               <View style={styles.qrContainer}>
                 <QRCode value={data.student_id} getRef={(c) => setQrRef(c)} size={200} backgroundColor="#ffffff" />
               </View>

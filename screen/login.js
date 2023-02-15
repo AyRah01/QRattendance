@@ -1,4 +1,4 @@
-import { Alert, Button, Image, StyleSheet, Text, TextInput, useColorScheme, View, CheckBox } from 'react-native';
+import { Alert, Button, Image, StyleSheet, Text, TextInput, useColorScheme, View, CheckBox, Vibration } from 'react-native';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../config';
@@ -28,7 +28,10 @@ export default function Login({ navigation }) {
     console.log(loginReq.data);
 
     const resData = loginReq.data;
-    if (!resData.success) Alert.alert('Login Failed', resData.msg);
+    if (!resData.success){
+      Alert.alert('Login Failed', resData.msg);
+      Vibration.vibrate(100)
+    } 
     else {
       await save('user_id',resData.data.email)
       await save('teacher', resData.data.firstname)

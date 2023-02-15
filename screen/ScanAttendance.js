@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button, Alert, ScrollView, ToastAndroid } from 'react-native';
+import { Text, View, StyleSheet, Button, Alert, ScrollView, ToastAndroid, Vibration } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import axios from 'axios';
 import { API_BASE } from '../config';
@@ -34,8 +34,14 @@ export default function ScanAttendance({ route, navigation }) {
         const student = reqData.result[0];
         const fullname = `${student.firstname}  ${student.middlename}  ${student.lastname}`;
         ToastAndroid.show('Attendance recorded for ' + fullname, ToastAndroid.SHORT);
-      }else if(reqData.code === 11)ToastAndroid.show('Already Checked', ToastAndroid.SHORT);
-       else ToastAndroid.show('This student is not enrolled in the current course',ToastAndroid.SHORT);
+        Vibration.vibrate(100)
+      }else if(reqData.code === 11){
+        ToastAndroid.show('Already Checked', ToastAndroid.SHORT);
+        Vibration.vibrate(100)
+      }
+       else {
+        ToastAndroid.show('This student is not enrolled in the current course',ToastAndroid.SHORT);
+        Vibration.vibrate(1000)}
     } catch (error) {
       console.log(error);
     }

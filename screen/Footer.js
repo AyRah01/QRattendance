@@ -21,7 +21,7 @@ export default function Footer({ active, navigation, action,actionIcon, actionTi
         onTouchEnd={active === 'attendance' ? null : () => navigation.navigate('attendance')}
       >
         <Image source={active === 'attendance' ? AttendanceDark : Attendance} style={styles.navIcon} />
-        <Text style={active === 'attendance' ? styles.navTitleActive : styles.navTitle}>Attendace</Text>
+        <Text style={active === 'attendance' ? styles.navTitleActive : styles.navTitle}>Attendance</Text>
       </View>
       <View style={styles.footerItemCenter} onTouchEnd={action}>
         <Ionicons name={actionIcon} size={70} color={colors.primary} />
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     flex: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
   },
   navTitle: {
     fontSize: 10,

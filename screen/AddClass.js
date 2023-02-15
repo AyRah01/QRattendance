@@ -46,7 +46,7 @@ export default function AddClass({ navigation, route }) {
               </View>
               
               <View style={styles.details}>
-                <Text style={styles.detailsTitle}>Semister</Text>
+                <Text style={styles.detailsTitle}>Semester</Text>
                 <Picker
                 style={{flex:1}}
                   selectedValue={semester}

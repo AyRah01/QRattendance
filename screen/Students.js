@@ -18,6 +18,7 @@ export default function Students({ navigation }) {
   const [students, setStudents] = useState([]);
   const [toSearch, setToSearch] = useState('');
   const [courseFilter, setCourseFilter] = useState('all');
+  const [typeFilter, setTypeFilter] = useState("regular")
   const [yearSectionFilter, setYearSectionFilter] = useState('all');
 
   const { getValueFor } = useStorage();
@@ -49,7 +50,7 @@ export default function Students({ navigation }) {
 
   useEffect(() => {
     filterReq();
-  }, [courseFilter, yearSectionFilter]);
+  }, [courseFilter, yearSectionFilter, typeFilter]);
   const reqClasses = async () => {
     const teacherId = await getValueFor('user_id');
     const classsReq = await axios.post(API_BASE + '/getAllStudents', { teacherId: teacherId });
@@ -61,7 +62,7 @@ export default function Students({ navigation }) {
     const teacherId = await getValueFor('user_id');
 
     const request = await axios.get(
-      API_BASE + '/filterStudents/' + courseFilter + '/' + yearSectionFilter + '/' + teacherId,
+      API_BASE + '/filterStudents/'+typeFilter+'/' + courseFilter + '/' + yearSectionFilter + '/' + teacherId,
     );
     const studentsData = request.data;
     setStudents(studentsData);
@@ -92,6 +93,21 @@ export default function Students({ navigation }) {
       <Header title={'Students'} navigation={navigation} />
       <View style={styles.titleBox}>
         <View style={styles.filterWrapper}>
+        <View style={styles.filterBoxBlox}>
+            <Picker
+              placeholder='Student Type'
+              style={{ flex: 1, color: 'white' }}
+              selectedValue={typeFilter}
+              onValueChange={(itemValue, itemIndex) => setTypeFilter(itemValue)}
+            >
+              <Picker.Item label="Regular" value="regular" />
+              <Picker.Item label="Irregular" value="irregular" />
+
+            </Picker>
+          </View>
+        </View>
+        <View style={styles.filterWrapper}>
+        
           <View style={styles.filterBox}>
             <Picker
               style={{ flex: 1, color: 'white' }}
@@ -258,6 +274,18 @@ const styles = StyleSheet.create({
   },
   filterBox: {
     width: '45%',
+    height: 40,
+    borderRadius: 3,
+    flex: 0,
+    backgroundColor: colors.secondary,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    margin: 5,
+    padding: 10,
+  },
+  filterBoxBlox:{
+    width: '93%',
     height: 40,
     borderRadius: 3,
     flex: 0,

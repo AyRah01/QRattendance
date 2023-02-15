@@ -41,6 +41,7 @@ const MyButton = ({title, icon, action}) => {
       <HeaderSmall title='Menu' navigation = {navigation}/>
       <View style={styles.btnView}>
         <MyButton title='About Us' icon={'information-circle-outline'} action = {()=>navigation.navigate('aboutUs')}/>
+        <MyButton title='Change Password' icon='key-outline' action={()=>navigation.navigate('changePassword')}/>
         <MyButton title='Logout' icon={'log-out-outline'} action={logout}/>
 
       </View>

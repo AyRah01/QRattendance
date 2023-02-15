@@ -1,5 +1,5 @@
 import { StyleSheet} from 'react-native'
-export const API_BASE ="http://192.168.1.110:4001"
+export const API_BASE ="http://192.168.254.102:4001"
 // colors
 
 
@@ -59,3 +59,5 @@ exports.headerStyle =  StyleSheet.create({
       },
       
 })
+
+// eas build -p android --profile preview
