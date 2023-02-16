@@ -79,6 +79,8 @@ export default function AddStudent({ navigation, route }) {
       setIdPart1('');
       setIdPart2('')
       setStudentType('')
+      setGender('')
+      
       return navigation.navigate('student-details', { data });
     }
     else return Alert.alert('Incomplete', 'All fields are required to be filled');

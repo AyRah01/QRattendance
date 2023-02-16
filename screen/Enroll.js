@@ -13,8 +13,11 @@ export default function Enroll({ navigation, route }) {
   const [students, setStudents] = useState([]);
   const [toSearch, setToSearch] = useState('');
   const [courseFilter, setCourseFilter] = useState('BSIT');
+  const [typeFilter, setTypeFilter] = useState("regular")
   const [yearSectionFilter, setYearSectionFilter] = useState('1-A');
+  const [enrollFlag, setEnrollFlag] = useState(true)
   const { course_number, course_title } = route.params.classData;
+
 
   const { getValueFor } = useStorage();
   useEffect(() => {
@@ -31,15 +34,15 @@ export default function Enroll({ navigation, route }) {
     if (toSearch.length > 3) search();
     else getAllStudents();
   }, [toSearch]);
-
   useEffect(() => {
     filterReq();
-  }, [courseFilter, yearSectionFilter]);
+    
+  }, [courseFilter, yearSectionFilter, typeFilter]);
   const filterReq = async () => {
     const teacherId = await getValueFor('user_id');
 
     const request = await axios.get(
-      API_BASE + '/filterStudents/' + courseFilter + '/' + yearSectionFilter + '/' + teacherId,
+      API_BASE + '/filterStudents/'+typeFilter+'/' + courseFilter + '/' + yearSectionFilter + '/' + teacherId,
     );
     const studentsData = request.data;
     setStudents(studentsData);
@@ -61,6 +64,20 @@ export default function Enroll({ navigation, route }) {
       setStudents(searchData);
     }
   };
+  const enrollAll = async()=>{
+    const enrollReq = await axios.post(API_BASE + '/enrollAll', { classId: course_number, students:students});
+    if (enrollReq.status !== 200)
+      return Alert.alert('Server Error', 'Sorry, cannot reach the server at the moment. Please try again later.');
+    const enrollRes = enrollReq.data;
+    if (enrollRes.code === 11)
+      return Alert.alert('Already Enrolled', 'This student is already enrolled in this class.');
+    if (!enrollRes.success)
+      return Alert.alert(
+        'Failed to Enroll',
+        'Sorry, an error has occured while enrolling student. Please try again later.',
+      );
+    navigation.goBack();
+  }
   const submitStudent = async (studentId) => {
     const enrollReq = await axios.post(API_BASE + '/enroll', { classId: course_number, studentId: studentId });
     if (enrollReq.status !== 200)
@@ -73,7 +90,6 @@ export default function Enroll({ navigation, route }) {
         'Failed to Enroll',
         'Sorry, an error has occured while enrolling student. Please try again later.',
       );
-
     navigation.goBack();
   };
 
@@ -93,6 +109,20 @@ export default function Enroll({ navigation, route }) {
       <View style={styles.titleBox}>
         <Text style={styles.title}>{course_number}</Text>
         <Text style={styles.title}>{course_title}</Text>
+        <View style={styles.filterWrapper}>
+        <View style={styles.filterBoxBlox}>
+            <Picker
+              placeholder='Student Type'
+              style={{ flex: 1, color: 'white' }}
+              selectedValue={typeFilter}
+              onValueChange={(itemValue, itemIndex) => setTypeFilter(itemValue)}
+            >
+              <Picker.Item label="Regular" value="regular" />
+              <Picker.Item label="Irregular" value="irregular" />
+
+            </Picker>
+          </View>
+        </View>
         <View style={styles.filterWrapper}>
           <View style={styles.filterBox}>
             <Picker
@@ -146,6 +176,9 @@ export default function Enroll({ navigation, route }) {
       <ScrollView>
         <View style={styles.body}>
           <View style={styles.itemsWrapper}>
+            {enrollFlag?(
+              <Button title='Select All' onPress={enrollAll} color={colors.primary}/>
+            ):""}
             {students?.map((data, idx) => (
               <Student data={data} key={idx} />
             ))}
@@ -389,5 +422,17 @@ const styles = StyleSheet.create({
     flex: 0,
     flexDirection: 'row',
     marginTop: 10,
+  },
+  filterBoxBlox:{
+    width: '93%',
+    height: 40,
+    borderRadius: 3,
+    flex: 0,
+    backgroundColor: colors.secondary,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    margin: 5,
+    padding: 10,
   },
 });
