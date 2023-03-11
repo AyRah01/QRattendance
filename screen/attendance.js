@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
 import { Ionicons } from '@expo/vector-icons';
 import LogoWest from './../assets/westlogo.png';
-import {headerStyle, colors} from './../config'
+import {headerStyle, colors} from '../config'
 import Header from './Header';
 export default function Attendance({ navigation }) {
   const {getValueFor} = useStorage()

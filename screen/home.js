@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, headerStyle } from './../config';
+import { colors, headerStyle } from '../config';
 import LogoWest from './../assets/westlogo.png';
 import { LinearGradient } from 'react-native-svg';
 import Student from './../assets/icons/students.png'

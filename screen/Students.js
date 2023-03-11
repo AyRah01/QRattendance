@@ -79,7 +79,7 @@ export default function Students({ navigation }) {
   };
   const Item = ({ data, target }) => {
     const fullname = data.firstname + ' ' + data.middlename + ' ' + data.lastname;
-    const yearSection = data.course + ' ' + data.year + ' ' + data.section;
+    const yearSection = data.type==='irregular'?data.course:data.course + ' ' + data.year + ' ' + data.section;
     return (
       <View style={styles.item} onTouchEnd={() => navigation.navigate('student-details', { data })}>
         <Text style={styles.itemTitle}>{fullname.toUpperCase()}</Text>

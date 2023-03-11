@@ -15,9 +15,9 @@ export default function AddClass({ navigation, route }) {
   const [courseNumber, setCourseNumber] = useState(classData?.course_number);
   const [courseTitle, setCourseTitle] = useState(classData?.course_title);
   const [semester, setSemester] = useState(classData?.semester || "1");
-  const [schoolYear, setSchoolYear] = useState(classData?.school_year);
+  const [schoolYear, setSchoolYear] = useState(classData?.school_year || `${new Date().getFullYear()}`);
   const [saving, setSaving] = useState(false)
-  useEffect(() => {}, []);
+
 
   const submit = async() => {
     setSaving(true)
@@ -59,7 +59,7 @@ export default function AddClass({ navigation, route }) {
               </View>
             <View style={styles.details}>
                 <Text style={styles.detailsTitle}>School Year</Text>
-                <TextInput style={styles.input} defaultValue={schoolYear} onChangeText={(e)=>setSchoolYear(e)} />
+                <TextInput style={styles.input} defaultValue={schoolYear} onChangeText={(e)=>setSchoolYear(e)} editable={false}/>
               </View>
               <View style={styles.btnWrapper}>
               <Button onPress={submit} title={saving?"Saving...":"Save"} color={colors.primary} disabled = {saving} />

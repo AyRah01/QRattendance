@@ -4,7 +4,7 @@ import axios from 'axios';
 import { API_BASE } from '../config';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import {colors} from './../config'
+import {colors} from '../config'
 import CustomBtn from '../components/CustomBtn/CustomBtn';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useStorage from '../helper/useStorage';
