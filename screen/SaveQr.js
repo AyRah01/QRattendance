@@ -79,8 +79,8 @@ export default function SaveQr({ route, navigation }) {
                     ' ' +
                     data.middlename.substring(0, 1).toUpperCase()}
                 </Text>
-                <Text style={styles.info}>{data.gender?.toUpperCase() || 'Undefined'}</Text>
-                <Text style={styles.info}>{data.course + ' ' + data.year + ' ' + data.section} </Text>
+                {data.gender? (<Text style={styles.info}>{data.gender?.toUpperCase()}</Text>):''}
+                <Text style={styles.info}>{data.course + ' ' + (data.year || " ") + ' ' + (data.section || " ")} </Text>
               </View>
             </ViewShot>
           </View>
