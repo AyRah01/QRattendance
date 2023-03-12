@@ -105,15 +105,40 @@ export default function AddStudent({ navigation, route }) {
           <View style={styles.detailsWrapper}>
             <View style={styles.details}>
               <Text style={styles.detailsTitle}>First Name</Text>
-              <TextInput style={styles.input} defaultValue={firstname} onChangeText={(e) => setfirstname(e)} />
+              <TextInput style={styles.input} defaultValue={firstname} onChangeText={(e) =>{
+                  var hasNumber = /\d/;
+                  if(!hasNumber.test(e)){
+                    setfirstname(e)
+
+                  }else{
+                    setfirstname("")
+                    Alert.alert("Invalid Input","Numbers are not allowed in this field")
+                  }
+            
+              }} />
             </View>
             <View style={styles.details}>
               <Text style={styles.detailsTitle}>Middle Name</Text>
-              <TextInput style={styles.input} defaultValue={middlename} onChangeText={(e) => setMiddlename(e)} />
+              <TextInput style={styles.input} defaultValue={middlename} onChangeText={(e) => {
+                   var hasNumber = /\d/;
+                   if(hasNumber.test(e)){
+                    setMiddlename("")
+                     return Alert.alert("Invalid Input","Numbers are not allowed in this field")
+                   }{
+                    setMiddlename(e)}
+                   }} />
             </View>
             <View style={styles.details}>
               <Text style={styles.detailsTitle}>Last Name</Text>
-              <TextInput style={styles.input} defaultValue={lastname} onChangeText={(e) => setLastname(e)} />
+              <TextInput style={styles.input} defaultValue={lastname} onChangeText={(e) => {
+                var hasNumber = /\d/;
+                if(hasNumber.test(e)){
+                 setLastname("")
+                  return Alert.alert("Invalid Input","Numbers are not allowed in this field")
+                }{
+                 setLastname(e)}
+                }
+               } />
             </View>
             <View style={styles.details}>
               <Text style={styles.detailsTitle}>Gender</Text>
