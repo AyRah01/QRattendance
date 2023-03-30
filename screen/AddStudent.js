@@ -87,6 +87,17 @@ export default function AddStudent({ navigation, route }) {
     
 
   };
+  const veririfyInput = (e) => {
+    var hasNumber = /\d/;
+                  var hasSpecial = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                  if(!hasNumber.test(e) && !hasSpecial.test(e)){
+                    return true
+
+                  }else{
+                    Alert.alert("Invalid Input","Numbers are not allowed in this field")
+                  }
+                  return false
+  }
   return (
     <SafeAreaView style={styles.mainWrapper}>
       <HeaderSmall title="Add Student" navigation={navigation} />
@@ -106,13 +117,8 @@ export default function AddStudent({ navigation, route }) {
             <View style={styles.details}>
               <Text style={styles.detailsTitle}>First Name</Text>
               <TextInput style={styles.input} defaultValue={firstname} onChangeText={(e) =>{
-                  var hasNumber = /\d/;
-                  if(!hasNumber.test(e)){
+                  if(veririfyInput(e)){
                     setfirstname(e)
-
-                  }else{
-                    setfirstname("")
-                    Alert.alert("Invalid Input","Numbers are not allowed in this field")
                   }
             
               }} />
@@ -120,23 +126,17 @@ export default function AddStudent({ navigation, route }) {
             <View style={styles.details}>
               <Text style={styles.detailsTitle}>Middle Name</Text>
               <TextInput style={styles.input} defaultValue={middlename} onChangeText={(e) => {
-                   var hasNumber = /\d/;
-                   if(hasNumber.test(e)){
-                    setMiddlename("")
-                     return Alert.alert("Invalid Input","Numbers are not allowed in this field")
-                   }{
-                    setMiddlename(e)}
+                   if(veririfyInput(e)){
+                    setMiddlename(e)
+                  }
                    }} />
             </View>
             <View style={styles.details}>
               <Text style={styles.detailsTitle}>Last Name</Text>
               <TextInput style={styles.input} defaultValue={lastname} onChangeText={(e) => {
-                var hasNumber = /\d/;
-                if(hasNumber.test(e)){
-                 setLastname("")
-                  return Alert.alert("Invalid Input","Numbers are not allowed in this field")
-                }{
-                 setLastname(e)}
+                if(veririfyInput(e)){
+                  setLastname(e)
+                }
                 }
                } />
             </View>

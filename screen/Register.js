@@ -29,7 +29,17 @@ export default function Register({ navigation }) {
     if (!resData.success) Alert.alert('Registration Failed', resData.msg);
     else navigation.navigate('login');
   };
+  const veririfyInput = (e) => {
+    var hasNumber = /\d/;
+                  var hasSpecial = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                  if(!hasNumber.test(e) && !hasSpecial.test(e)){
+                    return true
 
+                  }else{
+                    Alert.alert("Invalid Input","Numbers are not allowed in this field")
+                  }
+                  return false
+  }
   return (
       <SafeAreaView style={styles.mainWrapper}>
         <ScrollView>
@@ -42,7 +52,11 @@ export default function Register({ navigation }) {
             <TextInput
               style={styles.input}
               defaultValue={firstname}
-              onChangeText={(e) => setfirstname(e)}
+              onChangeText={(e) => {
+                if(veririfyInput(e)){
+                  setfirstname(e)
+                }
+              }}
               placeholder={'Firstname:'}
             />
           </View>
@@ -50,7 +64,11 @@ export default function Register({ navigation }) {
             <TextInput
               style={styles.input}
               defaultValue={middlename}
-              onChangeText={(e) => setMiddlename(e)}
+              onChangeText={(e) => {
+                if(veririfyInput(e)){
+                  setMiddlename(e)
+                }
+              }}
               placeholder={'Middlename:'}
             />
           </View>
@@ -58,7 +76,11 @@ export default function Register({ navigation }) {
             <TextInput
               style={styles.input}
               defaultValue={lastname}
-              onChangeText={(e) => setLastname(e)}
+              onChangeText={(e) => {
+                if(veririfyInput(e)){
+                  setLastname(e)
+                }
+              }}
               placeholder={'Lastname:'}
             />
           </View>
