@@ -13,6 +13,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import HeaderSmall from './HeaderSmall';
 import { colors } from './../config';
+import Footer from './Footer';
 export default function StudentInformation({ route, navigation }) {
   const { data, type, classData } = route.params;
   const [qrRef, setQrRef] = useState(null);
@@ -66,7 +67,6 @@ export default function StudentInformation({ route, navigation }) {
   };
   return (
       <SafeAreaView style={styles.mainWrapper}>
-        <ScrollView>
           <View style={styles.headerWrapper}>
             <Ionicons name="arrow-back-outline" size={30} color={colors.warning} onPress={() => navigation.goBack()} />
             <View style={styles.titleWrapper}>
@@ -84,6 +84,8 @@ export default function StudentInformation({ route, navigation }) {
           </View>
 
           <View style={styles.body}>
+          <ScrollView>
+
             <View style={styles.detailsWrapper}>
               <StudentInfoBox label="ID Number" value={data.student_id?.toUpperCase()} />
               <StudentInfoBox label="First Name" value={data.firstname?.toUpperCase()} />
@@ -101,8 +103,16 @@ export default function StudentInformation({ route, navigation }) {
                 <CustomBtn title="Save QR Code" type={'primary'} action={saveQrCode} />
               </View>
             </View>
+            </ScrollView>
+
           </View>
-        </ScrollView>
+        <Footer
+        active={'students'}
+        actionIcon="add-circle-outline"
+        actionTitle="Add Student"
+        navigation={navigation}
+        action={() => navigation.navigate('add-student')}
+      />
       </SafeAreaView>
   );
 }
@@ -120,7 +130,7 @@ const StudentInfoBox = ({ label, value }) => {
 };
 const styles = StyleSheet.create({
   mainWrapper: {
-    flex: 0,
+    flex: 1,
   },
   body: {
     flex: 1,
