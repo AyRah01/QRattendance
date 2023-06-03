@@ -31,7 +31,7 @@ export default function Register({ navigation }) {
   };
   const veririfyInput = (e) => {
     var hasNumber = /\d/;
-                  var hasSpecial = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                  var hasSpecial = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
                   if(!hasNumber.test(e) && !hasSpecial.test(e)){
                     return true
 
@@ -55,6 +55,8 @@ export default function Register({ navigation }) {
               onChangeText={(e) => {
                 if(veririfyInput(e)){
                   setfirstname(e)
+                }else{
+                  setfirstname("")
                 }
               }}
               placeholder={'Firstname:'}
@@ -67,6 +69,8 @@ export default function Register({ navigation }) {
               onChangeText={(e) => {
                 if(veririfyInput(e)){
                   setMiddlename(e)
+                }else{
+                  setMiddlename("")
                 }
               }}
               placeholder={'Middlename:'}
@@ -79,6 +83,8 @@ export default function Register({ navigation }) {
               onChangeText={(e) => {
                 if(veririfyInput(e)){
                   setLastname(e)
+                }else{
+                  setLastname("")
                 }
               }}
               placeholder={'Lastname:'}

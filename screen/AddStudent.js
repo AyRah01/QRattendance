@@ -89,7 +89,7 @@ export default function AddStudent({ navigation, route }) {
   };
   const veririfyInput = (e) => {
     var hasNumber = /\d/;
-                  var hasSpecial = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                  var hasSpecial = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
                   if(!hasNumber.test(e) && !hasSpecial.test(e)){
                     return true
 
@@ -119,6 +119,8 @@ export default function AddStudent({ navigation, route }) {
               <TextInput style={styles.input} defaultValue={firstname} onChangeText={(e) =>{
                   if(veririfyInput(e)){
                     setfirstname(e)
+                  }else{
+                    setfirstname("")
                   }
             
               }} />
@@ -128,6 +130,8 @@ export default function AddStudent({ navigation, route }) {
               <TextInput style={styles.input} defaultValue={middlename} onChangeText={(e) => {
                    if(veririfyInput(e)){
                     setMiddlename(e)
+                  }else{
+                    setMiddlename("")
                   }
                    }} />
             </View>
@@ -136,6 +140,8 @@ export default function AddStudent({ navigation, route }) {
               <TextInput style={styles.input} defaultValue={lastname} onChangeText={(e) => {
                 if(veririfyInput(e)){
                   setLastname(e)
+                }else{
+                  setLastname("")
                 }
                 }
                } />

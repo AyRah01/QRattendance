@@ -60,7 +60,7 @@ export default function Home({ navigation }) {
         <View style={headerStyle.logoBox}>
         <Ionicons name='apps-outline' size={30} color = {colors.warning} onPress = {()=>navigation.navigate('menu')} />
        
-          <Text style={headerStyle.appTitle}>Dashboard</Text>
+          <Text style={headerStyle.appTitle}>Menu</Text>
         </View>
         <Image source={LogoWest} style={headerStyle.logo} />
 
