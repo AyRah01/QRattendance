@@ -15,7 +15,7 @@ export default function AddClass({ navigation, route }) {
   const [courseNumber, setCourseNumber] = useState(classData?.course_number);
   const [courseTitle, setCourseTitle] = useState(classData?.course_title);
   const [semester, setSemester] = useState(classData?.semester || "1");
-  const [schoolYear, setSchoolYear] = useState(classData?.school_year || `${new Date().getFullYear()}`);
+  const [schoolYear, setSchoolYear] = useState(classData?.school_year || `${new Date().getFullYear()}-${new Date().getFullYear()+1}`);
   const [saving, setSaving] = useState(false)
 
 

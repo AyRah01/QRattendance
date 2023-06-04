@@ -89,7 +89,7 @@ export default function AddStudent({ navigation, route }) {
   };
   const veririfyInput = (e) => {
     var hasNumber = /\d/;
-                  var hasSpecial = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
+                  var hasSpecial = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
                   if(!hasNumber.test(e) && !hasSpecial.test(e)){
                     return true
 
